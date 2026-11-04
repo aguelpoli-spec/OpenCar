@@ -8,6 +8,31 @@ Funciona sin internet una vez descargado el mapa de tu región.
 > offline "Hey <brand>" voice assistant (Vosk), fuel log, maintenance reminders, clock/speed/media widgets.
 > The UI is currently **Spanish only** — translations are very welcome (see CONTRIBUTING.md).
 
+**Probado** en la pantalla Android de un Nissan Rogue 2013 (7″, 1024×600). Otros autos y pantallas deberían funcionar, pero aún no tenemos reportes: ¡cuéntanos en Issues!
+
+## Capturas
+> Capturas generadas con datos de ejemplo (sin información personal).
+
+| Inicio | Mi auto |
+|---|---|
+| ![Inicio](docs/screenshots/inicio.png) | ![Mi auto](docs/screenshots/mi-auto.png) |
+
+| Mapas sin internet | Música |
+|---|---|
+| ![Mapas](docs/screenshots/mapas.png) | ![Música](docs/screenshots/musica.png) |
+
+| Viaje y telemetría |
+|---|
+| ![Viaje](docs/screenshots/viaje.png) |
+
+## Compatibilidad con Android
+| App | Android mínimo | Nota |
+|---|---|---|
+| OpenCar Launcher | **8.0 (API 26)** | compilada para API 34 |
+| OpenCar Music | **10 (API 29)** | compilada para API 34 |
+
+No funcionan en Android 7 o anterior. Los APK de la sección Releases están firmados con la llave de depuración: para uso propio, compila y firma con tu propia llave.
+
 Dos apps en un solo repositorio:
 
 | App | Carpeta | Qué hace |
