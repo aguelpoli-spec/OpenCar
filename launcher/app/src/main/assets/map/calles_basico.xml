@@ -16,42 +16,124 @@
   <rule e="way" k="waterway" v="river|canal|stream"><line stroke="#AAD3DF" stroke-width="2.0" /></rule>
 
   <!-- edificios (color por tipo) -->
-  <rule e="way" k="building" v="*" zoom-min="14"><area fill="#D4C9BE" stroke="#B5A596" stroke-width="0.5" /></rule>
-  <rule e="way" k="building" v="retail|commercial|supermarket|mall|kiosk|office" zoom-min="15"><area fill="#EBC9D6" stroke="#C48BA3" stroke-width="0.6" /></rule>
-  <rule e="way" k="building" v="hospital|clinic" zoom-min="15"><area fill="#F4B6B6" stroke="#D45B5B" stroke-width="0.8" /></rule>
-  <rule e="way" k="building" v="school|university|college|kindergarten" zoom-min="15"><area fill="#BCD2F2" stroke="#6C93D2" stroke-width="0.8" /></rule>
-  <rule e="way" k="building" v="apartments|residential|dormitory" zoom-min="15"><area fill="#CFC5BE" stroke="#A89A8E" stroke-width="0.5" /></rule>
-  <rule e="way" k="building" v="industrial|warehouse|garage|garages" zoom-min="15"><area fill="#D9CFE0" stroke="#B3A4C0" stroke-width="0.5" /></rule>
-  <rule e="way" k="building" v="church|cathedral|chapel|mosque|temple" zoom-min="15"><area fill="#CBC3B5" stroke="#8F8574" stroke-width="0.7" /></rule>
-  <rule e="way" k="amenity" v="hospital|clinic" zoom-min="14"><area fill="#F8D4D4" stroke="#D45B5B" stroke-width="0.6" /></rule>
-  <rule e="way" k="amenity" v="marketplace" zoom-min="14"><area fill="#F5E2B8" stroke="#D1A24A" stroke-width="0.6" /></rule>
-  <rule e="way" k="shop" v="mall|supermarket|department_store|wholesale" zoom-min="14"><area fill="#EBC9D6" stroke="#C48BA3" stroke-width="0.8" /></rule>
+  <rule e="way" k="building" v="*" zoom-min="14"><area fill="#D4C9BE" stroke="#B5A596" stroke-width="0.5" scale="none" /></rule>
+  <rule e="way" k="building" v="retail|commercial|supermarket|mall|kiosk|office" zoom-min="15"><area fill="#EBC9D6" stroke="#C48BA3" stroke-width="0.6" scale="none" /></rule>
+  <rule e="way" k="building" v="hospital|clinic" zoom-min="15"><area fill="#F4B6B6" stroke="#D45B5B" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="building" v="school|university|college|kindergarten" zoom-min="15"><area fill="#BCD2F2" stroke="#6C93D2" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="building" v="apartments|residential|dormitory" zoom-min="15"><area fill="#CFC5BE" stroke="#A89A8E" stroke-width="0.5" scale="none" /></rule>
+  <rule e="way" k="building" v="industrial|warehouse|garage|garages" zoom-min="15"><area fill="#D9CFE0" stroke="#B3A4C0" stroke-width="0.5" scale="none" /></rule>
+  <rule e="way" k="building" v="church|cathedral|chapel|mosque|temple" zoom-min="15"><area fill="#CBC3B5" stroke="#8F8574" stroke-width="0.7" scale="none" /></rule>
+  <rule e="way" k="amenity" v="hospital|clinic" zoom-min="14"><area fill="#F8D4D4" stroke="#D45B5B" stroke-width="0.6" scale="none" /></rule>
+  <rule e="way" k="amenity" v="marketplace" zoom-min="14"><area fill="#F5E2B8" stroke="#D1A24A" stroke-width="0.6" scale="none" /></rule>
+  <rule e="way" k="shop" v="mall|supermarket|department_store|wholesale" zoom-min="14"><area fill="#EBC9D6" stroke="#C48BA3" stroke-width="0.8" scale="none" /></rule>
   <rule e="way" k="building" v="*" zoom-min="16"><caption k="name" font-size="10" fill="#5A4A3A" stroke="#FFFFFF" stroke-width="1.8" /></rule>
 
   <!-- calles: primero el borde y luego el relleno -->
-  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link">
-    <line stroke="#B8523A" stroke-width="5.4" stroke-linecap="round" />
-    <line stroke="#F9A98C" stroke-width="4.0" stroke-linecap="round" />
-  </rule>
-  <rule e="way" k="highway" v="primary|primary_link">
-    <line stroke="#B58A3A" stroke-width="5.0" stroke-linecap="round" />
-    <line stroke="#FCD68A" stroke-width="3.6" stroke-linecap="round" />
-  </rule>
-  <rule e="way" k="highway" v="secondary|secondary_link">
-    <line stroke="#A9A24A" stroke-width="4.6" stroke-linecap="round" />
-    <line stroke="#F7FABF" stroke-width="4.0" stroke-linecap="round" />
-  </rule>
-  <rule e="way" k="highway" v="tertiary|tertiary_link|unclassified|residential|living_street|road">
-    <line stroke="#B9B9B9" stroke-width="3.8" stroke-linecap="round" />
-    <line stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" />
-  </rule>
-  <rule e="way" k="highway" v="service|track" zoom-min="15">
-    <line stroke="#C8C8C8" stroke-width="3.0" stroke-linecap="round" />
-    <line stroke="#FFFFFF" stroke-width="2.0" stroke-linecap="round" />
-  </rule>
-  <rule e="way" k="highway" v="pedestrian|footway|path|steps|cycleway" zoom-min="16">
-    <line stroke="#C9B9A9" stroke-width="1.2" stroke-dasharray="4,3" />
-  </rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="16" zoom-max="16"><line stroke="#C8C8C8" stroke-width="3.4000000000000004" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="17" zoom-max="17"><line stroke="#C8C8C8" stroke-width="5.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="18" zoom-max="18"><line stroke="#C8C8C8" stroke-width="7.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="19" zoom-max="19"><line stroke="#C8C8C8" stroke-width="9.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="20" zoom-max="20"><line stroke="#C8C8C8" stroke-width="13.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="21" zoom-max="21"><line stroke="#C8C8C8" stroke-width="18.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="14" zoom-max="14"><line stroke="#B9B9B9" stroke-width="2.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="15" zoom-max="15"><line stroke="#B9B9B9" stroke-width="3.3" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="16" zoom-max="16"><line stroke="#B9B9B9" stroke-width="5.9" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="17" zoom-max="17"><line stroke="#B9B9B9" stroke-width="8.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="18" zoom-max="18"><line stroke="#B9B9B9" stroke-width="12.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="19" zoom-max="19"><line stroke="#B9B9B9" stroke-width="15.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="20" zoom-max="20"><line stroke="#B9B9B9" stroke-width="21.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="21" zoom-max="21"><line stroke="#B9B9B9" stroke-width="28.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="13" zoom-max="13"><line stroke="#B9B9B9" stroke-width="1.7999999999999998" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="14" zoom-max="14"><line stroke="#B9B9B9" stroke-width="3.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="15" zoom-max="15"><line stroke="#B9B9B9" stroke-width="4.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="16" zoom-max="16"><line stroke="#B9B9B9" stroke-width="7.199999999999999" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="17" zoom-max="17"><line stroke="#B9B9B9" stroke-width="10.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="18" zoom-max="18"><line stroke="#B9B9B9" stroke-width="14.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="19" zoom-max="19"><line stroke="#B9B9B9" stroke-width="18.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="20" zoom-max="20"><line stroke="#B9B9B9" stroke-width="24.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="21" zoom-max="21"><line stroke="#B9B9B9" stroke-width="31.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="13" zoom-max="13"><line stroke="#A9A24A" stroke-width="2.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="14" zoom-max="14"><line stroke="#A9A24A" stroke-width="3.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="15" zoom-max="15"><line stroke="#A9A24A" stroke-width="5.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="16" zoom-max="16"><line stroke="#A9A24A" stroke-width="8.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="17" zoom-max="17"><line stroke="#A9A24A" stroke-width="11.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="18" zoom-max="18"><line stroke="#A9A24A" stroke-width="15.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="19" zoom-max="19"><line stroke="#A9A24A" stroke-width="20.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="20" zoom-max="20"><line stroke="#A9A24A" stroke-width="27.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="21" zoom-max="21"><line stroke="#A9A24A" stroke-width="35.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="1" zoom-max="12"><line stroke="#B58A3A" stroke-width="1.7999999999999998" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="13" zoom-max="13"><line stroke="#B58A3A" stroke-width="3.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="14" zoom-max="14"><line stroke="#B58A3A" stroke-width="4.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="15" zoom-max="15"><line stroke="#B58A3A" stroke-width="6.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="16" zoom-max="16"><line stroke="#B58A3A" stroke-width="9.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="17" zoom-max="17"><line stroke="#B58A3A" stroke-width="12.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="18" zoom-max="18"><line stroke="#B58A3A" stroke-width="16.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="19" zoom-max="19"><line stroke="#B58A3A" stroke-width="22.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="20" zoom-max="20"><line stroke="#B58A3A" stroke-width="29.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="21" zoom-max="21"><line stroke="#B58A3A" stroke-width="37.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="1" zoom-max="12"><line stroke="#B8523A" stroke-width="2.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="13" zoom-max="13"><line stroke="#B8523A" stroke-width="3.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="14" zoom-max="14"><line stroke="#B8523A" stroke-width="5.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="15" zoom-max="15"><line stroke="#B8523A" stroke-width="7.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="16" zoom-max="16"><line stroke="#B8523A" stroke-width="10.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="17" zoom-max="17"><line stroke="#B8523A" stroke-width="13.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="18" zoom-max="18"><line stroke="#B8523A" stroke-width="18.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="19" zoom-max="19"><line stroke="#B8523A" stroke-width="24.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="20" zoom-max="20"><line stroke="#B8523A" stroke-width="31.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="21" zoom-max="21"><line stroke="#B8523A" stroke-width="39.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="16" zoom-max="16"><line stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="17" zoom-max="17"><line stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="18" zoom-max="18"><line stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="19" zoom-max="19"><line stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="20" zoom-max="20"><line stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="21" zoom-max="21"><line stroke="#FFFFFF" stroke-width="17" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="14" zoom-max="14"><line stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="15" zoom-max="15"><line stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="16" zoom-max="16"><line stroke="#FFFFFF" stroke-width="4.3" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="17" zoom-max="17"><line stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="18" zoom-max="18"><line stroke="#FFFFFF" stroke-width="10.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="19" zoom-max="19"><line stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="20" zoom-max="20"><line stroke="#FFFFFF" stroke-width="20" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="21" zoom-max="21"><line stroke="#FFFFFF" stroke-width="27" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="13" zoom-max="13"><line stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="14" zoom-max="14"><line stroke="#FFFFFF" stroke-width="2.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="15" zoom-max="15"><line stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="16" zoom-max="16"><line stroke="#FFFFFF" stroke-width="5.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="17" zoom-max="17"><line stroke="#FFFFFF" stroke-width="8.8" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="18" zoom-max="18"><line stroke="#FFFFFF" stroke-width="12.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="19" zoom-max="19"><line stroke="#FFFFFF" stroke-width="17" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="20" zoom-max="20"><line stroke="#FFFFFF" stroke-width="23" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="21" zoom-max="21"><line stroke="#FFFFFF" stroke-width="30" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="13" zoom-max="13"><line stroke="#F7FABF" stroke-width="1.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="14" zoom-max="14"><line stroke="#F7FABF" stroke-width="2.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="15" zoom-max="15"><line stroke="#F7FABF" stroke-width="4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="16" zoom-max="16"><line stroke="#F7FABF" stroke-width="6.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="17" zoom-max="17"><line stroke="#F7FABF" stroke-width="9.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="18" zoom-max="18"><line stroke="#F7FABF" stroke-width="14" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="19" zoom-max="19"><line stroke="#F7FABF" stroke-width="19" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="20" zoom-max="20"><line stroke="#F7FABF" stroke-width="26" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="21" zoom-max="21"><line stroke="#F7FABF" stroke-width="34" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="1" zoom-max="12"><line stroke="#FCD68A" stroke-width="1.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="13" zoom-max="13"><line stroke="#FCD68A" stroke-width="2.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="14" zoom-max="14"><line stroke="#FCD68A" stroke-width="3.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="15" zoom-max="15"><line stroke="#FCD68A" stroke-width="5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="16" zoom-max="16"><line stroke="#FCD68A" stroke-width="7.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="17" zoom-max="17"><line stroke="#FCD68A" stroke-width="10.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="18" zoom-max="18"><line stroke="#FCD68A" stroke-width="15" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="19" zoom-max="19"><line stroke="#FCD68A" stroke-width="21" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="20" zoom-max="20"><line stroke="#FCD68A" stroke-width="28" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="21" zoom-max="21"><line stroke="#FCD68A" stroke-width="36" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="1" zoom-max="12"><line stroke="#F9A98C" stroke-width="1.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="13" zoom-max="13"><line stroke="#F9A98C" stroke-width="3" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="14" zoom-max="14"><line stroke="#F9A98C" stroke-width="4.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="15" zoom-max="15"><line stroke="#F9A98C" stroke-width="6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="16" zoom-max="16"><line stroke="#F9A98C" stroke-width="8.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="17" zoom-max="17"><line stroke="#F9A98C" stroke-width="12" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="18" zoom-max="18"><line stroke="#F9A98C" stroke-width="17" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="19" zoom-max="19"><line stroke="#F9A98C" stroke-width="23" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="20" zoom-max="20"><line stroke="#F9A98C" stroke-width="30" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="21" zoom-max="21"><line stroke="#F9A98C" stroke-width="38" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="pedestrian|footway|path|steps|cycleway" zoom-min="16"><line stroke="#C9B9A9" stroke-width="1.2" stroke-dasharray="4,3" scale="none" /></rule>
 
   <!-- nombres de calles y avenidas -->
   <rule e="way" k="highway" v="motorway|trunk|primary|secondary|tertiary" zoom-min="14">
@@ -140,13 +222,13 @@
   </rule>
 
   <!-- ===== v2.44: deportes, plazas, militares, aeropuertos, comercios, telefonía ===== -->
-  <rule e="way" k="landuse" v="military"><area fill="#E4D5CF" stroke="#B08A7A" stroke-width="0.8" /></rule>
-  <rule e="way" k="military" v="*"><area fill="#E4D5CF" stroke="#B08A7A" stroke-width="0.8" /></rule>
-  <rule e="way" k="aeroway" v="aerodrome|apron|terminal" zoom-min="10"><area fill="#DADAE8" stroke="#9A9AB8" stroke-width="0.8" /></rule>
+  <rule e="way" k="landuse" v="military"><area fill="#E4D5CF" stroke="#B08A7A" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="military" v="*"><area fill="#E4D5CF" stroke="#B08A7A" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="aeroway" v="aerodrome|apron|terminal" zoom-min="10"><area fill="#DADAE8" stroke="#9A9AB8" stroke-width="0.8" scale="none" /></rule>
   <rule e="way" k="aeroway" v="runway|taxiway" zoom-min="11"><line stroke="#B8B8CC" stroke-width="4.0" /></rule>
-  <rule e="way" k="leisure" v="pitch|sports_centre|track|swimming_pool" zoom-min="15"><area fill="#B5E3B0" stroke="#6BAF65" stroke-width="0.8" /></rule>
-  <rule e="way" k="leisure" v="stadium" zoom-min="13"><area fill="#C8E8C0" stroke="#5E9B58" stroke-width="1.0" /></rule>
-  <rule e="way" k="place" v="square" zoom-min="15"><area fill="#EAF2DC" stroke="#9DB98A" stroke-width="0.8" /></rule>
+  <rule e="way" k="leisure" v="pitch|sports_centre|track|swimming_pool" zoom-min="15"><area fill="#B5E3B0" stroke="#6BAF65" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="leisure" v="stadium" zoom-min="13"><area fill="#C8E8C0" stroke="#5E9B58" stroke-width="1.0" scale="none" /></rule>
+  <rule e="way" k="place" v="square" zoom-min="15"><area fill="#EAF2DC" stroke="#9DB98A" stroke-width="0.8" scale="none" /></rule>
   <rule e="way" k="highway" v="pedestrian" zoom-min="15"><area fill="#F2EEE6" /></rule>
   <rule e="way" k="landuse" v="military" zoom-min="13"><caption k="name" font-style="bold" font-size="11" fill="#7A3F2A" stroke="#FFFFFF" stroke-width="2" /></rule>
   <rule e="way" k="aeroway" v="aerodrome|terminal" zoom-min="10"><caption k="name" font-style="bold" font-size="12" fill="#3A3A7A" stroke="#FFFFFF" stroke-width="2.2" /></rule>
@@ -227,7 +309,7 @@
   <rule e="way" k="natural" v="beach|sand"  zoom-min="14"><area fill="#F0E4B8" /></rule>
   <rule e="way" k="natural" v="water" zoom-min="14"><caption k="name" font-size="11" font-style="italic" fill="#2A6F9A" stroke="#FFFFFF" stroke-width="2" /></rule>
   <rule e="way" k="waterway" v="river|canal|stream" zoom-min="14"><pathText k="name" font-style="italic" font-size="11" fill="#2A6F9A" stroke="#FFFFFF" stroke-width="2" /></rule>
-  <rule e="way" k="amenity" v="place_of_worship" zoom-min="15"><area fill="#D7CFC0" stroke="#8F8574" stroke-width="0.8" /></rule>
+  <rule e="way" k="amenity" v="place_of_worship" zoom-min="15"><area fill="#D7CFC0" stroke="#8F8574" stroke-width="0.8" scale="none" /></rule>
   <rule e="way" k="building" v="church|cathedral|chapel|mosque|temple|synagogue|religious" zoom-min="15"><caption k="name" font-style="bold" font-size="10" fill="#5A4A6A" stroke="#FFFFFF" stroke-width="2" /></rule>
   <rule e="node" k="amenity" v="place_of_worship" zoom-min="15">
     <circle radius="3.7" fill="#7B6AA8" stroke="#FFFFFF" stroke-width="1.6" scale-radius="true" />

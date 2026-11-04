@@ -38,7 +38,9 @@ object VozClips {
         "hello_conductor" to "Listo, ya conozco tu voz", "hello_acompanante" to "Listo, ya conozco tu voz", "done" to "Voz lista"
     )
 
-    fun has(ctx: Context, key: String) = ctx.resources.getIdentifier("voz_$key", "raw", ctx.packageName) != 0
+    /** Voz grabada incluida (Adriana). Se puede apagar en Asistente para que hable la voz del sistema. */
+    fun clipsOn(ctx: Context) = ctx.getSharedPreferences("launcher", Context.MODE_PRIVATE).getBoolean("voz_clips", true)
+    fun has(ctx: Context, key: String) = clipsOn(ctx) && ctx.resources.getIdentifier("voz_$key", "raw", ctx.packageName) != 0
 
     /** Reproduce una o varias frases seguidas (p. ej. dist_500 + turn_left). false si alguna no se puede decir. */
     fun play(ctx: Context, vararg keys: String, onDone: (() -> Unit)? = null): Boolean {

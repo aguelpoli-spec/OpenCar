@@ -4716,11 +4716,35 @@ class MainActivity : Activity() {
             add("Entrenar la voz del acompañante  ${if (SpeakerDb.has(this, "acompanante")) "✓" else ""}") { train("acompanante") }
             add("Borrar las voces guardadas") { SpeakerDb.clear(this); toast("Voces borradas: te preguntará «¿Con quién hablo?»") }
         }
+        add("Nombre para llamarlo: «Hey ${wakeName()}» (cambiar)") { renameWake() }
+        add("Voz de los avisos: ${if (VozClips.clipsOn(this)) "grabada incluida" else "voz del sistema"} (cambiar)") {
+            val nv = !VozClips.clipsOn(this); prefs.edit().putBoolean("voz_clips", nv).apply()
+            toast(if (nv) "Usará las grabaciones incluidas" else "Usará la voz del sistema"); VozClips.play(this, "ok")
+        }
         add("Permitir abrir el launcher desde otras apps") {
             try { startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))) } catch (e: Exception) { toast("No pude abrir ese ajuste") }
         }
         AlertDialog.Builder(this).setTitle("Hey ${wakeName()} · ${if (on) AsistenteService.status else "apagado"}")
             .setItems(items.toTypedArray()) { _, w -> acts[w]() }.setNegativeButton("Cerrar", null).show()
+    }
+
+    /** Cómo quieres llamar al asistente: por defecto la marca de tu auto; puedes poner otro nombre (escríbelo como suena en español, p. ej. «Nisán»). */
+    private fun renameWake() {
+        val et = EditText(this).apply { setSingleLine(); setText(prefs.getString("wake_custom", "") ?: ""); hint = wakeName() }
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(p(24), p(10), p(24), 0); addView(et) }
+        fun apply() {
+            AsistenteService.applyWake(CarCatalog.wakeWord(this, prefs))
+            if (AsistenteService.running) { AsistenteService.stop(this); handler.postDelayed({ AsistenteService.start(this) }, 600) }
+        }
+        AlertDialog.Builder(this).setTitle("¿Cómo quieres llamarlo?")
+            .setMessage("Se activa diciendo «Hey» y este nombre. Por defecto usa la marca de tu auto. Escríbelo como suena en español (mínimo 3 letras).")
+            .setView(col)
+            .setPositiveButton("Guardar") { _, _ ->
+                val t = et.text.toString().trim()
+                if (t.length in 1..2) toast("Muy corto: usa al menos 3 letras") else { prefs.edit().putString("wake_custom", t).apply(); apply(); toast("Ahora di «Hey ${wakeName()}»") }
+            }
+            .setNeutralButton("Usar la marca") { _, _ -> prefs.edit().remove("wake_custom").apply(); apply(); toast("Ahora di «Hey ${wakeName()}»") }
+            .setNegativeButton("Cancelar", null).show()
     }
 
     private fun downloadVoice() {

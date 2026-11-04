@@ -57,6 +57,8 @@ object CarCatalog {
 
     /** Palabra para despertar al asistente: la primera palabra de la marca («Hey Toyota»); sin marca, «auto». */
     fun wakeWord(ctx: Context, p: SharedPreferences): String {
+        // nombre elegido a mano (Ajustes > Asistente > Nombre para llamarlo); si no hay, el de la marca
+        plain((p.getString("wake_custom", null) ?: "").trim().split(' ', '-').firstOrNull() ?: "").takeIf { it.length >= 3 }?.let { return it }
         val b = brand(ctx, p) ?: return "auto"
         return plain(b.name.split(' ', '-').first()).ifEmpty { "auto" }
     }

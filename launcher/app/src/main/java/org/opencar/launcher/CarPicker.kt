@@ -118,7 +118,7 @@ class CarPicker(private val a: Activity, private val p: SharedPreferences, priva
         AlertDialog.Builder(a).setTitle("$model: ¿de qué año es tu auto?").setView(et)
             .setPositiveButton("Guardar") { _, _ ->
                 val y = et.text.toString().trim().takeIf { it.length == 4 } ?: ""
-                p.edit().putString("car_brand", b.slug).putString("car_model", model).putString("car_year", y)
+                p.edit().putString("car_brand", b.slug).putString("car_model", model).putString("car_year", y).remove("wake_custom")
                     .putString("car_name", listOf(b.name, model, y).filter { it.isNotBlank() }.joinToString(" ")).apply()
                 onChanged()
                 AlertDialog.Builder(a).setTitle("¿Quieres una foto de tu modelo de fondo?")
