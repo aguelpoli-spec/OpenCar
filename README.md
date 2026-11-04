@@ -69,7 +69,7 @@ Funciona sin internet una vez descargado el mapa de tu región.
 | OpenCar Launcher | **8.0 (API 26)** | compilada para API 34 |
 | OpenCar Music | **10 (API 29)** | compilada para API 34 |
 
-No funcionan en Android 7 o anterior. Los APK de la sección Releases están firmados con la llave de depuración: para uso propio, compila y firma con tu propia llave.
+No funcionan en Android 7 o anterior. Los APK de la sección Releases están firmados con la llave del proyecto (huella SHA-256 del certificado en las notas de cada Release). Si prefieres no confiar en ellos, compila y firma con tu propia llave.
 
 Dos apps en un solo repositorio:
 
