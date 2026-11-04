@@ -11,7 +11,7 @@ import java.util.Calendar
  */
 object FeriadosBo {
     const val NAC = 0   // feriado nacional
-    const val DEP = 1   // feriado departamental (Santa Cruz)
+    const val DEP = 1   // feriado departamental/regional (los agrega el usuario)
     const val IMP = 2   // fecha importante, no feriado
     const val USR = 3   // evento propio del usuario
     const val SUG = 4   // sugerido en línea (sin confirmar)
@@ -79,10 +79,6 @@ object FeriadosBo {
             add(Ev(2026, 6, 5, "Corpus Christi (día adicional, DS 5521)", NAC))
             add(Ev(2026, 8, 7, "Día de la Independencia (día adicional, DS 5521)", NAC))
         }
-        // departamental: Santa Cruz
-        val sc = cal(y, 9, 24)
-        add(ev(sc, "Día de Santa Cruz", DEP))
-        if (sc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) add(ev(shift(sc, 1), "Día de Santa Cruz (lunes de traslado)", DEP))
         // fechas importantes (no son feriado)
         add(ev(shift(e, -46), "Miércoles de Ceniza", IMP))
         add(ev(shift(e, -7), "Domingo de Ramos", IMP))
