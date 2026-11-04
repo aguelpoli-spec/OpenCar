@@ -21,6 +21,12 @@ Funciona sin internet una vez descargado el mapa de tu región.
 |---|---|
 | ![Mapas](docs/screenshots/mapas.png) | ![Música](docs/screenshots/musica.png) |
 
+**Mapa sin internet** (dibujado con el motor real de la app, a distintos niveles de zoom; datos © colaboradores de OpenStreetMap)
+
+| Ciudad | Avenidas | Calles |
+|---|---|---|
+| ![Mapa ciudad](docs/screenshots/mapa-ciudad.png) | ![Mapa avenidas](docs/screenshots/mapa-avenidas.png) | ![Mapa calles](docs/screenshots/mapa-calles.png) |
+
 | Viaje y telemetría | Diagnóstico y ajustes |
 |---|---|
 | ![Viaje](docs/screenshots/viaje.png) | ![Diagnóstico](docs/screenshots/diagnostico.png) |
@@ -69,7 +75,7 @@ Funciona sin internet una vez descargado el mapa de tu región.
 | OpenCar Launcher | **8.0 (API 26)** | compilada para API 34 |
 | OpenCar Music | **10 (API 29)** | compilada para API 34 |
 
-No funcionan en Android 7 o anterior. Los APK de la sección Releases están firmados con la llave del proyecto (huella SHA-256 del certificado en las notas de cada Release). Si prefieres no confiar en ellos, compila y firma con tu propia llave.
+No funcionan en Android 7 o anterior. Los APK de la sección Releases están firmados con la llave de depuración: para uso propio, compila y firma con tu propia llave.
 
 Dos apps en un solo repositorio:
 
