@@ -1,0 +1,41 @@
+# OpenCar 🚗
+
+**Launcher y reproductor de música de código abierto para pantallas Android de auto** (probado en una pantalla de 7″, 1024×600, horizontal).
+Funciona sin internet una vez descargado el mapa de tu región.
+
+> English summary: open-source Android head-unit launcher + music player. Pick your car brand/model (logos and photos
+> as backgrounds), download offline maps for **any** region (OpenStreetMap), offline turn-by-turn routing (BRouter),
+> offline "Hey <brand>" voice assistant (Vosk), fuel log, maintenance reminders, clock/speed/media widgets.
+> The UI is currently **Spanish only** — translations are very welcome (see CONTRIBUTING.md).
+
+Dos apps en un solo repositorio:
+
+| App | Carpeta | Qué hace |
+|---|---|---|
+| **OpenCar Launcher** | `launcher/` | Pantalla de inicio del auto: reloj, velocidad, música, mapa sin internet, navegación por voz, gasolina, mantenimiento, documentos, asistente de voz |
+| **OpenCar Music** | `music/` | Reproductor, historial de escuchas, carátulas, letras y música libre |
+
+## Funciones principales
+- **Tu auto**: eliges marca (≈390 logos incluidos) y modelo (lista de Wikidata, del más antiguo al más nuevo) y puedes descargar una foto libre como fondo o subir la tuya.
+- **Mapas de cualquier país**: elige continente → país → región; se descarga el mapa (Mapsforge) y los datos de rutas (BRouter) de esa zona.
+- **Lugares**: Casa, Trabajo, Pareja, Familia y Taller, que guardas tú. Gasolineras cercanas leídas del propio mapa.
+- **Asistente de voz sin internet**: «Hey <marca de tu auto>», con voz del sistema o con tus propias grabaciones (`res/raw/voz_*.mp3`).
+- Gasolina (consumo y costo en tu moneda), recordatorios de mantenimiento, documentos, calendario con feriados de tu país.
+
+## Compilar
+Requisitos: JDK 17, Android SDK (API 34). En cada carpeta (`launcher/` y `music/`):
+```
+./gradlew testDebugUnitTest      # pruebas
+./gradlew assembleDebug          # APK de prueba en app/build/outputs/apk/debug/
+```
+Para un APK instalable de "release" firma tú mismo con tu propia llave (**nunca la subas al repositorio**).
+
+## Primer uso
+1. Instala los dos APK y abre **OpenCar Launcher**; dale los permisos que pida (ubicación, notificaciones, micrófono si quieres el asistente).
+2. Toca el nombre del auto → **Marca y modelo**.
+3. Abre **Mapas**, toca el botón de región (país → zona) y luego **Descargar ahora**. Los mapas pesan desde unos MB hasta cientos de MB: usa Wi-Fi.
+4. Ajustes → **Lugares** para guardar Casa/Trabajo, etc.
+
+## Licencias
+Código: **Apache 2.0** (`LICENSE`). Componentes y datos de terceros: ver `NOTICE`. Los logos son marcas registradas de sus dueños.
+Los datos de los mapas son © OpenStreetMap contributors (ODbL).

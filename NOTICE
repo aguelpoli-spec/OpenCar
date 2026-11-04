@@ -1,0 +1,22 @@
+OpenCar
+Copyright 2026 los colaboradores de OpenCar
+Licencia Apache 2.0 (ver LICENSE).
+
+Este producto incluye o usa software y datos de terceros:
+
+- Mapsforge (https://github.com/mapsforge/mapsforge) — LGPL-3.0. Se usa como biblioteca sin modificar.
+- BRouter (https://github.com/abrensch/brouter) — licencia MIT. launcher/app/libs/brouter-all.jar y
+  launcher/app/src/main/java/btools/router/OpenCarRouter.java (adaptador propio).
+- Vosk (https://alphacephei.com/vosk) — Apache 2.0. Reconocimiento de voz sin internet.
+- AndroidSVG, AndroidX, Kotlin — Apache 2.0.
+- Datos de mapas: © colaboradores de OpenStreetMap, ODbL (https://www.openstreetmap.org/copyright).
+  Los mapas se descargan desde download.mapsforge.org y los segmentos de rutas desde brouter.de.
+- Modelos de autos: Wikidata (CC0). Fotos opcionales: Wikimedia Commons, con licencias libres; la app guarda
+  el crédito del autor y excluye las licencias NC/ND.
+- Logos de marcas (launcher/app/src/main/assets/logos): son MARCAS REGISTRADAS de sus respectivos
+  fabricantes. Se incluyen solo para que cada usuario identifique su propio auto. Obtenidos del conjunto
+  "car-logos-dataset" (MIT, https://github.com/filippofilip95/car-logos-dataset). Este proyecto no está
+  afiliado ni respaldado por ninguna marca. Si eres titular de una marca y quieres que se retire, abre un issue.
+
+- Voces del asistente (launcher/app/src/main/res/raw/voz_*.mp3): grabaciones de la voz de una persona, incluidas
+  con su permiso. Puedes reemplazarlas por las tuyas con los mismos nombres de archivo.

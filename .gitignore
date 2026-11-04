@@ -1,0 +1,14 @@
+# Compilación
+build/
+.gradle/
+*.apk
+*.aab
+# Local / secretos (NUNCA subir)
+local.properties
+*.keystore
+*.jks
+keystore.properties
+# IDE
+.idea/
+*.iml
+.DS_Store
