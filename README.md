@@ -41,6 +41,28 @@ Funciona sin internet una vez descargado el mapa de tu región.
 ### Modo manejo
 ![Modo manejo](docs/screenshots/modo-manejo.png)
 
+### Más funciones del Launcher
+| Calendario con feriados | Asistente de voz |
+|---|---|
+| ![Calendario](docs/screenshots/calendario.png) | ![Asistente](docs/screenshots/asistente-voz.png) |
+
+| Elegir marca de tu auto (≈390 logos) | Mi música |
+|---|---|
+| ![Marcas](docs/screenshots/selector-marca.png) | ![Biblioteca](docs/screenshots/biblioteca.png) |
+
+### OpenCar Music
+| Reproductor | Biblioteca |
+|---|---|
+| ![Reproductor](docs/screenshots/music-reproductor.png) | ![Biblioteca](docs/screenshots/music-biblioteca.png) |
+
+| Búsqueda | Ajustes |
+|---|---|
+| ![Buscar](docs/screenshots/music-buscar.png) | ![Ajustes](docs/screenshots/music-ajustes.png) |
+
+| Panel de la app (historial, carátulas, letras) | Carátulas automáticas |
+|---|---|
+| ![Panel](docs/screenshots/music-app-inicio.png) | ![Carátulas](docs/screenshots/music-app-caratulas.png) |
+
 ## Compatibilidad con Android
 | App | Android mínimo | Nota |
 |---|---|---|

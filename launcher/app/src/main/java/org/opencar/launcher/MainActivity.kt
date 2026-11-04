@@ -3740,6 +3740,7 @@ class MainActivity : Activity() {
         col.addView(header, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
 
         val body = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(p(20), p(4), p(20), p(10)) }
+        if (calMonth < 1 || calYear < 1) { val c0 = Calendar.getInstance(); calYear = c0.get(Calendar.YEAR); calMonth = c0.get(Calendar.MONTH) + 1 }
         val evs = eventsOfYear(calYear)
         val monthEvs = evs.filter { it.m == calMonth }
         val today = Calendar.getInstance()
@@ -3840,7 +3841,7 @@ class MainActivity : Activity() {
         right.addView(sv, LinearLayout.LayoutParams(MATCH_PARENT, 0, 1f))
         val netAt = prefs.getLong("cal_net_at", 0L)
         val netTxt = if (netAt == 0L) "En línea: aún sin consultar." else "En línea: consultado el ${fmtDate(netAt)}."
-        right.addView(txt("Se calcula solo cada año (DS 2750 y DS 5483; 2026 con DS 5521). $netTxt Los puentes nuevos aparecen como sugeridos en violeta; confírmalos o agrégalos con + Evento.", 11f, muted).apply {
+        right.addView(txt((if (Locale.getDefault().country == "BO") "Se calcula solo cada año (DS 2750 y DS 5483; 2026 con DS 5521). " else "Feriados de tu país vía internet (botón En línea). ") + "$netTxt Los puentes nuevos aparecen como sugeridos en violeta; confírmalos o agrégalos con + Evento.", 11f, muted).apply {
             setPadding(0, p(6), 0, 0)
         })
         body.addView(right, LinearLayout.LayoutParams(0, MATCH_PARENT, 1f))
