@@ -27,6 +27,10 @@ Funciona sin internet una vez descargado el mapa de tu región.
 |---|---|---|
 | ![Mapa ciudad](docs/screenshots/mapa-ciudad.png) | ![Mapa avenidas](docs/screenshots/mapa-avenidas.png) | ![Mapa calles](docs/screenshots/mapa-calles.png) |
 
+Modo noche (tema propio, calles claras sobre fondo oscuro):
+
+![Mapa de noche](docs/screenshots/mapa-noche.png)
+
 | Viaje y telemetría | Diagnóstico y ajustes |
 |---|---|
 | ![Viaje](docs/screenshots/viaje.png) | ![Diagnóstico](docs/screenshots/diagnostico.png) |

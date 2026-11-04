@@ -49,8 +49,8 @@ class LiveMap(ctx: Context, private val sc: Float, private val acc: Int, private
             v.mapScaleBar.isVisible = false
             v.setBuiltInZoomControls(false)
             val mf = MapFile(MapData.mapFile(ctx))
-            val tc = AndroidUtil.createTileCache(ctx, "opencar_mini", v.model.displayModel.tileSize, 1f, v.model.frameBufferModel.overdrawFactor)
-            val tl = AndroidUtil.createTileRendererLayer(tc, v.model.mapViewPosition, mf, theme(ctx), false, true, false)
+            val tc = AndroidUtil.createTileCache(ctx, cacheId(ctx, "opencar_mini", night), v.model.displayModel.tileSize, 1.5f, v.model.frameBufferModel.overdrawFactor)
+            val tl = AndroidUtil.createTileRendererLayer(tc, v.model.mapViewPosition, mf, theme(ctx, night), false, true, false)
             tl.textScale = 1.1f
             v.layerManager.layers.add(tl)
             val gf = AndroidGraphicFactory.INSTANCE
@@ -142,26 +142,29 @@ class LiveMap(ctx: Context, private val sc: Float, private val acc: Int, private
             return ok
         }
 
-        fun theme(ctx: Context): org.mapsforge.map.rendertheme.XmlRenderTheme =
-            try {
+        /** Tema del mapa; de noche usa su propio tema (colores pensados para oscuro) en vez de filtrar toda la vista. */
+        fun theme(ctx: Context, night: Boolean = false): org.mapsforge.map.rendertheme.XmlRenderTheme {
+            val sfx = if (night) "_noche" else ""
+            return try {
                 ensureGfx(ctx)
-                if (iconsOn(ctx) && iconThemeWorks(ctx)) org.mapsforge.map.rendertheme.StreamRenderTheme("", ctx.assets.open("map/calles.xml"))
-                else org.mapsforge.map.rendertheme.StreamRenderTheme("/", ctx.assets.open("map/calles_basico.xml"))
-            } catch (e: Throwable) { try { org.mapsforge.map.rendertheme.StreamRenderTheme("/", ctx.assets.open("map/calles_basico.xml")) } catch (e2: Throwable) { InternalRenderTheme.DEFAULT } }
-
-        /** Mismo modo noche del mapa completo: colores invertidos y tono girado. */
-        fun applyNight(mv: MapView, night: Boolean) {
-            if (!night) { mv.setLayerType(View.LAYER_TYPE_NONE, null); return }
-            val inv = ColorMatrix(floatArrayOf(-1f, 0f, 0f, 0f, 255f, 0f, -1f, 0f, 0f, 255f, 0f, 0f, -1f, 0f, 255f, 0f, 0f, 0f, 1f, 0f))
-            val a = Math.toRadians(190.0); val c = cos(a).toFloat(); val s = Math.sin(a).toFloat()
-            val hue = ColorMatrix(floatArrayOf(
-                0.213f + c * 0.787f - s * 0.213f, 0.715f - c * 0.715f - s * 0.715f, 0.072f - c * 0.072f + s * 0.928f, 0f, 0f,
-                0.213f - c * 0.213f + s * 0.143f, 0.715f + c * 0.285f + s * 0.140f, 0.072f - c * 0.072f - s * 0.283f, 0f, 0f,
-                0.213f - c * 0.213f - s * 0.787f, 0.715f - c * 0.715f + s * 0.715f, 0.072f + c * 0.928f + s * 0.072f, 0f, 0f,
-                0f, 0f, 0f, 1f, 0f))
-            inv.postConcat(hue)
-            inv.postConcat(ColorMatrix().apply { setScale(0.92f, 0.92f, 0.95f, 1f) })
-            mv.setLayerType(View.LAYER_TYPE_HARDWARE, Paint().apply { colorFilter = ColorMatrixColorFilter(inv) })
+                if (iconsOn(ctx) && iconThemeWorks(ctx)) org.mapsforge.map.rendertheme.StreamRenderTheme("", ctx.assets.open("map/calles$sfx.xml"))
+                else org.mapsforge.map.rendertheme.StreamRenderTheme("/", ctx.assets.open("map/calles_basico$sfx.xml"))
+            } catch (e: Throwable) { try { org.mapsforge.map.rendertheme.StreamRenderTheme("/", ctx.assets.open("map/calles_basico$sfx.xml")) } catch (e2: Throwable) { InternalRenderTheme.DEFAULT } }
         }
+
+        /** La caché de imágenes del mapa va por versión y modo: así nunca se mezclan imágenes de un tema viejo (cuadros negros). */
+        fun cacheId(ctx: Context, base: String, night: Boolean): String {
+            val v = try { ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionCode } catch (e: Throwable) { 0 }
+            val id = "${base}_v${v}_${if (night) "n" else "d"}"
+            try {
+                for (dir in listOfNotNull(ctx.cacheDir, ctx.externalCacheDir)) dir.listFiles()?.forEach { f ->
+                    if ((f.name.startsWith("opencar_map") || f.name.startsWith("opencar_mini")) && !f.name.startsWith(base + "_v${v}_")) f.deleteRecursively()
+                }
+            } catch (e: Throwable) { }
+            return id
+        }
+
+        /** Antes filtraba toda la vista con una capa de hardware (se quedaba sin actualizar en pantallas de auto); ahora el modo noche es un tema propio. */
+        fun applyNight(mv: MapView, night: Boolean) { mv.setLayerType(View.LAYER_TYPE_NONE, null) }
     }
 }

@@ -98,15 +98,17 @@ class LiveMapTest {
 
 class MapaTemaTest {
     @Test fun elEstiloDelMapaEsXmlValido() {
-        val f = java.io.File("src/main/assets/map/calles.xml")
-        val doc = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f)
-        assertEquals("rendertheme", doc.documentElement.nodeName)
-        assertTrue(doc.getElementsByTagName("pathText").length >= 2)
-        assertTrue(doc.getElementsByTagName("lineSymbol").length >= 2)
-        val iconos = java.io.File("src/main/assets/symbols")
-        val srcs = doc.getElementsByTagName("symbol"); val lsrcs = doc.getElementsByTagName("lineSymbol")
-        for (i in 0 until srcs.length) assertTrue(java.io.File(iconos, (srcs.item(i) as org.w3c.dom.Element).getAttribute("src").removePrefix("assets:symbols/")).exists())
-        for (i in 0 until lsrcs.length) assertTrue(java.io.File(iconos, (lsrcs.item(i) as org.w3c.dom.Element).getAttribute("src").removePrefix("assets:symbols/")).exists())
+        for (nombre in listOf("calles.xml", "calles_noche.xml", "calles_basico.xml", "calles_basico_noche.xml")) {
+            val f = java.io.File("src/main/assets/map/$nombre")
+            val doc = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f)
+            assertEquals("rendertheme", doc.documentElement.nodeName)
+            assertTrue(nombre, doc.getElementsByTagName("pathText").length >= 2)
+            val iconos = java.io.File("src/main/assets/symbols")
+            for (tag in listOf("symbol", "lineSymbol")) {
+                val l = doc.getElementsByTagName(tag)
+                for (i in 0 until l.length) assertTrue(java.io.File(iconos, (l.item(i) as org.w3c.dom.Element).getAttribute("src").removePrefix("assets:symbols/")).exists())
+            }
+        }
     }
 }
 

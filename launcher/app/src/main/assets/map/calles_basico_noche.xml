@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd"
+    version="5" map-background="#100F09" map-background-outside="#1F1F20">
+
+  <!-- agua y verde -->
+  <rule e="way" k="natural" v="water|riverbank|bay"><area fill="#153549" /></rule>
+  <rule e="way" k="waterway" v="riverbank|dock"><area fill="#153549" /></rule>
+  <rule e="way" k="landuse" v="forest|wood|grass|meadow|recreation_ground|village_green|cemetery"><area fill="#032800" /></rule>
+  <rule e="way" k="natural" v="wood|scrub|grassland"><area fill="#032800" /></rule>
+  <rule e="way" k="leisure" v="park|garden|playground|pitch|stadium|golf_course"><area fill="#001F00" /></rule>
+  <rule e="way" k="landuse" v="residential"><area fill="#19150F" /></rule>
+  <rule e="way" k="landuse" v="commercial|retail"><area fill="#2E1916" /></rule>
+  <rule e="way" k="landuse" v="industrial"><area fill="#291924" /></rule>
+  <rule e="way" k="amenity" v="school|university|college|hospital|parking"><area fill="#0D1200" /></rule>
+  <rule e="way" k="waterway" v="river|canal|stream"><line stroke="#153549" stroke-width="2.0" /></rule>
+
+  <!-- edificios (color por tipo) -->
+  <rule e="way" k="building" v="*" zoom-min="14"><area fill="#373025" stroke="#5A5041" stroke-width="0.5" scale="none" /></rule>
+  <rule e="way" k="building" v="retail|commercial|supermarket|mall|kiosk|office" zoom-min="15"><area fill="#42232C" stroke="#875263" stroke-width="0.6" scale="none" /></rule>
+  <rule e="way" k="building" v="hospital|clinic" zoom-min="15"><area fill="#612C24" stroke="#D16B5B" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="building" v="school|university|college|kindergarten" zoom-min="15"><area fill="#1F2C50" stroke="#5267AE" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="building" v="apartments|residential|dormitory" zoom-min="15"><area fill="#3A332C" stroke="#635A4F" stroke-width="0.5" scale="none" /></rule>
+  <rule e="way" k="building" v="industrial|warehouse|garage|garages" zoom-min="15"><area fill="#312536" stroke="#5B4965" stroke-width="0.5" scale="none" /></rule>
+  <rule e="way" k="building" v="church|cathedral|chapel|mosque|temple" zoom-min="15"><area fill="#3B3729" stroke="#757061" stroke-width="0.7" scale="none" /></rule>
+  <rule e="way" k="amenity" v="hospital|clinic" zoom-min="14"><area fill="#391A16" stroke="#D16B5B" stroke-width="0.6" scale="none" /></rule>
+  <rule e="way" k="amenity" v="marketplace" zoom-min="14"><area fill="#231B00" stroke="#6B5400" stroke-width="0.6" scale="none" /></rule>
+  <rule e="way" k="shop" v="mall|supermarket|department_store|wholesale" zoom-min="14"><area fill="#42232C" stroke="#875263" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="building" v="*" zoom-min="16"><caption k="name" font-size="10" fill="#AEA396" stroke="#000000" stroke-width="1.8" /></rule>
+
+  <!-- calles: primero el borde y luego el relleno -->
+  <rule e="way" k="highway" v="service|track" zoom-min="16" zoom-max="16"><line stroke="#07090D" stroke-width="3.4000000000000004" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="17" zoom-max="17"><line stroke="#07090D" stroke-width="5.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="18" zoom-max="18"><line stroke="#07090D" stroke-width="7.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="19" zoom-max="19"><line stroke="#07090D" stroke-width="9.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="20" zoom-max="20"><line stroke="#07090D" stroke-width="13.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="21" zoom-max="21"><line stroke="#07090D" stroke-width="18.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="14" zoom-max="14"><line stroke="#07090D" stroke-width="2.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="15" zoom-max="15"><line stroke="#07090D" stroke-width="3.3" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="16" zoom-max="16"><line stroke="#07090D" stroke-width="5.9" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="17" zoom-max="17"><line stroke="#07090D" stroke-width="8.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="18" zoom-max="18"><line stroke="#07090D" stroke-width="12.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="19" zoom-max="19"><line stroke="#07090D" stroke-width="15.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="20" zoom-max="20"><line stroke="#07090D" stroke-width="21.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="21" zoom-max="21"><line stroke="#07090D" stroke-width="28.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="13" zoom-max="13"><line stroke="#07090D" stroke-width="1.7999999999999998" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="14" zoom-max="14"><line stroke="#07090D" stroke-width="3.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="15" zoom-max="15"><line stroke="#07090D" stroke-width="4.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="16" zoom-max="16"><line stroke="#07090D" stroke-width="7.199999999999999" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="17" zoom-max="17"><line stroke="#07090D" stroke-width="10.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="18" zoom-max="18"><line stroke="#07090D" stroke-width="14.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="19" zoom-max="19"><line stroke="#07090D" stroke-width="18.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="20" zoom-max="20"><line stroke="#07090D" stroke-width="24.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="21" zoom-max="21"><line stroke="#07090D" stroke-width="31.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="13" zoom-max="13"><line stroke="#07090D" stroke-width="2.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="14" zoom-max="14"><line stroke="#07090D" stroke-width="3.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="15" zoom-max="15"><line stroke="#07090D" stroke-width="5.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="16" zoom-max="16"><line stroke="#07090D" stroke-width="8.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="17" zoom-max="17"><line stroke="#07090D" stroke-width="11.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="18" zoom-max="18"><line stroke="#07090D" stroke-width="15.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="19" zoom-max="19"><line stroke="#07090D" stroke-width="20.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="20" zoom-max="20"><line stroke="#07090D" stroke-width="27.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="21" zoom-max="21"><line stroke="#07090D" stroke-width="35.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="1" zoom-max="12"><line stroke="#07090D" stroke-width="1.7999999999999998" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="13" zoom-max="13"><line stroke="#07090D" stroke-width="3.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="14" zoom-max="14"><line stroke="#07090D" stroke-width="4.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="15" zoom-max="15"><line stroke="#07090D" stroke-width="6.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="16" zoom-max="16"><line stroke="#07090D" stroke-width="9.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="17" zoom-max="17"><line stroke="#07090D" stroke-width="12.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="18" zoom-max="18"><line stroke="#07090D" stroke-width="16.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="19" zoom-max="19"><line stroke="#07090D" stroke-width="22.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="20" zoom-max="20"><line stroke="#07090D" stroke-width="29.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="21" zoom-max="21"><line stroke="#07090D" stroke-width="37.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="1" zoom-max="12"><line stroke="#07090D" stroke-width="2.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="13" zoom-max="13"><line stroke="#07090D" stroke-width="3.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="14" zoom-max="14"><line stroke="#07090D" stroke-width="5.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="15" zoom-max="15"><line stroke="#07090D" stroke-width="7.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="16" zoom-max="16"><line stroke="#07090D" stroke-width="10.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="17" zoom-max="17"><line stroke="#07090D" stroke-width="13.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="18" zoom-max="18"><line stroke="#07090D" stroke-width="18.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="19" zoom-max="19"><line stroke="#07090D" stroke-width="24.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="20" zoom-max="20"><line stroke="#07090D" stroke-width="31.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="21" zoom-max="21"><line stroke="#07090D" stroke-width="39.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="16" zoom-max="16"><line stroke="#3F4961" stroke-width="1.8" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="17" zoom-max="17"><line stroke="#3F4961" stroke-width="3.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="18" zoom-max="18"><line stroke="#3F4961" stroke-width="5.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="19" zoom-max="19"><line stroke="#3F4961" stroke-width="8" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="20" zoom-max="20"><line stroke="#3F4961" stroke-width="12" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="service|track" zoom-min="21" zoom-max="21"><line stroke="#3F4961" stroke-width="17" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="14" zoom-max="14"><line stroke="#566380" stroke-width="1.1" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="15" zoom-max="15"><line stroke="#566380" stroke-width="2.3" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="16" zoom-max="16"><line stroke="#566380" stroke-width="4.3" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="17" zoom-max="17"><line stroke="#566380" stroke-width="7" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="18" zoom-max="18"><line stroke="#566380" stroke-width="10.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="19" zoom-max="19"><line stroke="#566380" stroke-width="14" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="20" zoom-max="20"><line stroke="#566380" stroke-width="20" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road" zoom-min="21" zoom-max="21"><line stroke="#566380" stroke-width="27" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="13" zoom-max="13"><line stroke="#6C7A96" stroke-width="1.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="14" zoom-max="14"><line stroke="#6C7A96" stroke-width="2.0" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="15" zoom-max="15"><line stroke="#6C7A96" stroke-width="3.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="16" zoom-max="16"><line stroke="#6C7A96" stroke-width="5.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="17" zoom-max="17"><line stroke="#6C7A96" stroke-width="8.8" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="18" zoom-max="18"><line stroke="#6C7A96" stroke-width="12.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="19" zoom-max="19"><line stroke="#6C7A96" stroke-width="17" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="20" zoom-max="20"><line stroke="#6C7A96" stroke-width="23" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="21" zoom-max="21"><line stroke="#6C7A96" stroke-width="30" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="13" zoom-max="13"><line stroke="#98A5BF" stroke-width="1.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="14" zoom-max="14"><line stroke="#98A5BF" stroke-width="2.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="15" zoom-max="15"><line stroke="#98A5BF" stroke-width="4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="16" zoom-max="16"><line stroke="#98A5BF" stroke-width="6.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="17" zoom-max="17"><line stroke="#98A5BF" stroke-width="9.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="18" zoom-max="18"><line stroke="#98A5BF" stroke-width="14" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="19" zoom-max="19"><line stroke="#98A5BF" stroke-width="19" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="20" zoom-max="20"><line stroke="#98A5BF" stroke-width="26" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="21" zoom-max="21"><line stroke="#98A5BF" stroke-width="34" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="1" zoom-max="12"><line stroke="#DDB04A" stroke-width="1.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="13" zoom-max="13"><line stroke="#DDB04A" stroke-width="2.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="14" zoom-max="14"><line stroke="#DDB04A" stroke-width="3.4" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="15" zoom-max="15"><line stroke="#DDB04A" stroke-width="5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="16" zoom-max="16"><line stroke="#DDB04A" stroke-width="7.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="17" zoom-max="17"><line stroke="#DDB04A" stroke-width="10.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="18" zoom-max="18"><line stroke="#DDB04A" stroke-width="15" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="19" zoom-max="19"><line stroke="#DDB04A" stroke-width="21" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="20" zoom-max="20"><line stroke="#DDB04A" stroke-width="28" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="primary|primary_link" zoom-min="21" zoom-max="21"><line stroke="#DDB04A" stroke-width="36" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="1" zoom-max="12"><line stroke="#EE8A3E" stroke-width="1.6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="13" zoom-max="13"><line stroke="#EE8A3E" stroke-width="3" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="14" zoom-max="14"><line stroke="#EE8A3E" stroke-width="4.2" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="15" zoom-max="15"><line stroke="#EE8A3E" stroke-width="6" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="16" zoom-max="16"><line stroke="#EE8A3E" stroke-width="8.5" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="17" zoom-max="17"><line stroke="#EE8A3E" stroke-width="12" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="18" zoom-max="18"><line stroke="#EE8A3E" stroke-width="17" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="19" zoom-max="19"><line stroke="#EE8A3E" stroke-width="23" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="20" zoom-max="20"><line stroke="#EE8A3E" stroke-width="30" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="motorway|motorway_link|trunk|trunk_link" zoom-min="21" zoom-max="21"><line stroke="#EE8A3E" stroke-width="38" stroke-linecap="round" scale="none" /></rule>
+  <rule e="way" k="highway" v="pedestrian|footway|path|steps|cycleway" zoom-min="16"><line stroke="#6A7690" stroke-width="1.2" stroke-dasharray="4,3" scale="none" /></rule>
+
+  <!-- nombres de calles y avenidas -->
+  <rule e="way" k="highway" v="motorway|trunk|primary|secondary|tertiary" zoom-min="14">
+    <pathText k="name" font-style="bold" font-size="13" fill="#CDCDD4" stroke="#000000" stroke-width="2.4" />
+  </rule>
+  <rule e="way" k="highway" v="unclassified|residential|living_street|road|service" zoom-min="16">
+    <pathText k="name" font-size="12" fill="#BEBEC5" stroke="#000000" stroke-width="2.2" />
+  </rule>
+
+  <!-- barrios, ciudades y lugares -->
+  <rule e="node" k="place" v="city|town">
+    <caption k="name" font-style="bold" font-size="18" fill="#BEBEC5" stroke="#000000" stroke-width="3" />
+  </rule>
+  <rule e="node" k="place" v="suburb|neighbourhood|village|hamlet" zoom-min="13">
+    <caption k="name" font-style="bold" font-size="13" fill="#A087C2" stroke="#000000" stroke-width="2.4" />
+  </rule>
+
+  <!-- áreas con nombre: colegios, universidades, hospitales, mercados, malls -->
+  <rule e="way" k="amenity" v="hospital|clinic|marketplace|university|college" zoom-min="15">
+    <caption k="name" font-style="bold" font-size="11" fill="#98A9E3" stroke="#000000" stroke-width="2" />
+  </rule>
+  <rule e="way" k="amenity" v="school|kindergarten|townhall|police|place_of_worship|bank|bus_station|theatre|cinema" zoom-min="16">
+    <caption k="name" font-style="bold" font-size="11" fill="#98A9E3" stroke="#000000" stroke-width="2" />
+  </rule>
+  <rule e="way" k="shop" v="mall|supermarket|department_store|wholesale|hardware|doityourself|furniture|electronics|car|car_repair" zoom-min="15">
+    <caption k="name" font-style="bold" font-size="11" fill="#E49CC1" stroke="#000000" stroke-width="2" />
+  </rule>
+  <rule e="way" k="leisure" v="park|stadium" zoom-min="16"><caption k="name" font-size="11" fill="#50A269" stroke="#000000" stroke-width="2" /></rule>
+
+  <!-- lugares: colegios, salud, comida, bancos, tiendas... -->
+  <rule e="node" k="amenity" v="hospital|clinic" zoom-min="14">
+    <circle radius="5" fill="#EB7260" stroke="#000000" stroke-width="2" scale-radius="true" />
+    <rule e="any" k="*" v="*" zoom-min="15"><caption k="name" font-style="bold" font-size="11" fill="#EBA197" stroke="#000000" stroke-width="2.2" dy="-14" /></rule>
+  </rule>
+  <rule e="node" k="amenity" v="doctors|pharmacy|dentist|veterinary" zoom-min="17">
+    <circle radius="3.4" fill="#B95744" stroke="#000000" stroke-width="1.5" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#EBA197" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="amenity" v="school|kindergarten|college|university" zoom-min="15">
+    <circle radius="4" fill="#637BE3" stroke="#000000" stroke-width="1.8" scale-radius="true" />
+    <rule e="any" k="*" v="*" zoom-min="16"><caption k="name" font-size="11" fill="#98A9E3" stroke="#000000" stroke-width="2" dy="-12" /></rule>
+  </rule>
+  <rule e="node" k="amenity" v="marketplace" zoom-min="14">
+    <circle radius="5" fill="#715600" stroke="#000000" stroke-width="2" scale-radius="true" />
+    <rule e="any" k="*" v="*" zoom-min="15"><caption k="name" font-style="bold" font-size="11" fill="#B09F4B" stroke="#000000" stroke-width="2.2" dy="-14" /></rule>
+  </rule>
+  <rule e="node" k="shop" v="mall|supermarket|department_store|wholesale" zoom-min="14">
+    <circle radius="5" fill="#D273A8" stroke="#000000" stroke-width="2" scale-radius="true" />
+    <rule e="any" k="*" v="*" zoom-min="15"><caption k="name" font-style="bold" font-size="11" fill="#E49CC1" stroke="#000000" stroke-width="2.2" dy="-14" /></rule>
+  </rule>
+  <rule e="node" k="shop" v="hardware|doityourself|furniture|electronics|car|car_repair|convenience|bakery|clothes|shoes|mobile_phone|computer|bicycle|optician|beauty|hairdresser" zoom-min="17">
+    <circle radius="3.1" fill="#B76BD9" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#D6A0F2" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="amenity" v="restaurant|fast_food|cafe|bar|pub|ice_cream|food_court" zoom-min="17">
+    <circle radius="3.1" fill="#A96401" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#C4A16A" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="amenity" v="bank|atm" zoom-min="17">
+    <circle radius="3.1" fill="#1F825B" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#63AB95" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="amenity" v="police|townhall|courthouse|post_office|library|community_centre|bus_station|cinema|theatre|fire_station" zoom-min="16">
+    <circle radius="3.1" fill="#7B9ED6" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#A2B7DF" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="amenity" v="place_of_worship" zoom-min="16">
+    <circle radius="3.1" fill="#78787C" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#ACACB2" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="shop" v="*" zoom-min="17">
+    <circle radius="2.8" fill="#B76BD9" stroke="#000000" stroke-width="1.3" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#D6A0F2" stroke="#000000" stroke-width="2" dy="-10" />
+  </rule>
+  <rule e="node" k="office" v="*" zoom-min="17">
+    <circle radius="2.8" fill="#737C97" stroke="#000000" stroke-width="1.3" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#A3ABC3" stroke="#000000" stroke-width="2" dy="-10" />
+  </rule>
+  <rule e="node" k="tourism" v="hotel|hostel|guest_house|motel|apartment|museum|attraction|gallery|viewpoint" zoom-min="17">
+    <circle radius="3.1" fill="#938553" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#B3A983" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="amenity" v="fuel" zoom-min="14">
+    <circle radius="4" fill="#664A00" stroke="#C2B37A" stroke-width="1.6" scale-radius="true" />
+    <rule e="any" k="*" v="*" zoom-min="16"><caption k="name" font-size="10" fill="#B9A963" stroke="#000000" stroke-width="2" dy="-12" /></rule>
+  </rule>
+
+  <!-- ===== v2.44: deportes, plazas, militares, aeropuertos, comercios, telefonía ===== -->
+  <rule e="way" k="landuse" v="military"><area fill="#2E221B" stroke="#7E614E" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="military" v="*"><area fill="#2E221B" stroke="#7E614E" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="aeroway" v="aerodrome|apron|terminal" zoom-min="10"><area fill="#22202F" stroke="#5D5878" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="aeroway" v="runway|taxiway" zoom-min="11"><line stroke="#423E54" stroke-width="4.0" /></rule>
+  <rule e="way" k="leisure" v="pitch|sports_centre|track|swimming_pool" zoom-min="15"><area fill="#03340A" stroke="#287034" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="leisure" v="stadium" zoom-min="13"><area fill="#052806" stroke="#3D7E49" stroke-width="1.0" scale="none" /></rule>
+  <rule e="way" k="place" v="square" zoom-min="15"><area fill="#081300" stroke="#32532B" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="highway" v="pedestrian" zoom-min="15"><area fill="#111008" /></rule>
+  <rule e="way" k="landuse" v="military" zoom-min="13"><caption k="name" font-style="bold" font-size="11" fill="#CD9F86" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="aeroway" v="aerodrome|terminal" zoom-min="10"><caption k="name" font-style="bold" font-size="12" fill="#B6AAEF" stroke="#000000" stroke-width="2.2" /></rule>
+  <rule e="way" k="leisure" v="pitch|sports_centre|stadium|swimming_pool" zoom-min="16"><caption k="name" font-size="10" fill="#6AAA78" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="place" v="square" zoom-min="16"><caption k="name" font-size="11" fill="#77A069" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="leisure" v="stadium" zoom-min="14"><caption k="name" font-style="bold" font-size="12" fill="#6AAA78" stroke="#000000" stroke-width="2.2" /></rule>
+  <rule e="node" k="aeroway" v="aerodrome|terminal|helipad" zoom-min="9">
+    <circle radius="5" fill="#8B7AD3" stroke="#000000" stroke-width="2" scale-radius="true" />
+    <rule e="any" k="*" v="*" zoom-min="10"><caption k="name" font-style="bold" font-size="12" fill="#B6AAEF" stroke="#000000" stroke-width="2.2" dy="-14" /></rule>
+  </rule>
+  <rule e="node" k="military" v="*" zoom-min="14">
+    <circle radius="3.7" fill="#AE8C69" stroke="#000000" stroke-width="1.6" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#C4AE97" stroke="#000000" stroke-width="2" dy="-12" />
+  </rule>
+  <rule e="node" k="leisure" v="stadium|pitch|sports_centre|swimming_pool|fitness_centre" zoom-min="15">
+    <circle radius="3.7" fill="#268238" stroke="#000000" stroke-width="1.6" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#6AAA78" stroke="#000000" stroke-width="2" dy="-12" />
+  </rule>
+  <rule e="node" k="place" v="square" zoom-min="15">
+    <circle radius="3.1" fill="#295F1A" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="11" fill="#77A069" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="leisure" v="park|garden|playground" zoom-min="16">
+    <caption k="name" font-size="10" fill="#50A269" stroke="#000000" stroke-width="2" />
+  </rule>
+  <rule e="node" k="shop" v="pastry|bakery|confectionery|chocolate|ice_cream" zoom-min="17">
+    <circle radius="3.1" fill="#8E5500" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#C4A16A" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="cuisine" v="salteña|saltena|empanada|empanadas|pastry|bakery|coffee_shop" zoom-min="17">
+    <circle radius="3.1" fill="#8E5500" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#C4A16A" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="shop" v="clothes|shoes|boutique|fashion|bag|jewelry|fabric|tailor|sports" zoom-min="17">
+    <circle radius="3.1" fill="#CB61A9" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#E599CE" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="shop" v="electronics|appliance|houseware|hifi|computer|video_games|kitchen|lighting" zoom-min="17">
+    <circle radius="3.4" fill="#587FDD" stroke="#000000" stroke-width="1.5" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#93ACF2" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="shop" v="mobile_phone|telecommunication" zoom-min="17">
+    <circle radius="3.4" fill="#0A7B83" stroke="#000000" stroke-width="1.5" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#62AAB2" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="office" v="telecommunication|government|ngo|association" zoom-min="16">
+    <circle radius="3.1" fill="#0A7B83" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#62AAB2" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="node" k="amenity" v="telephone|internet_cafe|bus_station|taxi|public_building|toilets|drinking_water|fire_station|embassy|social_facility|kindergarten|driving_school|car_wash|car_rental" zoom-min="17">
+    <circle radius="2.5" fill="#6B81A5" stroke="#000000" stroke-width="1.2" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#9FADC8" stroke="#000000" stroke-width="2" dy="-10" />
+  </rule>
+  <rule e="node" k="public_transport" v="station|stop_position" zoom-min="17">
+    <circle radius="2.2" fill="#6B81A5" stroke="#000000" stroke-width="1.2" scale-radius="true" />
+    <caption k="name" font-size="9" fill="#9FADC8" stroke="#000000" stroke-width="2" dy="-9" />
+  </rule>
+  <rule e="node" k="highway" v="bus_stop" zoom-min="17"><circle radius="1.9" fill="#6B81A5" stroke="#000000" stroke-width="1" scale-radius="true" /></rule>
+  <rule e="node" k="place" v="locality|isolated_dwelling|farm|island" zoom-min="13">
+    <caption k="name" font-size="11" fill="#A087C2" stroke="#000000" stroke-width="2.2" />
+  </rule>
+  <rule e="node" k="place" v="municipality|county|district|region|state" zoom-min="9">
+    <caption k="name" font-style="bold" font-size="14" fill="#C59570" stroke="#000000" stroke-width="2.6" />
+  </rule>
+  <rule e="node" k="place" v="town|village" zoom-min="10">
+    <caption k="name" font-style="bold" font-size="14" fill="#B5B5BB" stroke="#000000" stroke-width="2.6" />
+  </rule>
+  <rule e="way" k="landuse" v="retail|commercial" zoom-min="15"><caption k="name" font-style="bold" font-size="10" fill="#E49CC1" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="landuse" v="industrial|garages" zoom-min="15"><caption k="name" font-size="10" fill="#AF98CA" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="amenity" v="bus_station|car_wash|car_rental|public_building|fire_station" zoom-min="16"><caption k="name" font-size="10" fill="#9FADC8" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="highway" v="motorway|trunk|primary" zoom-min="10"><pathText k="ref" font-style="bold" font-size="11" fill="#EBADA4" stroke="#000000" stroke-width="2.4" /></rule>
+  <rule e="way" k="highway" v="motorway|trunk|primary|secondary" zoom-min="12"><pathText k="name" font-style="bold" font-size="13" fill="#CDCDD4" stroke="#000000" stroke-width="2.4" /></rule>
+
+  <!-- ===== v2.45: parques, iglesias, patrimonio y todo lo demás con nombre ===== -->
+  <rule e="way" k="leisure" v="park|garden|playground|nature_reserve|common|dog_park|recreation_ground" zoom-min="14"><caption k="name" font-size="11" fill="#50A269" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="landuse" v="cemetery|recreation_ground|village_green|allotments" zoom-min="15"><caption k="name" font-size="10" fill="#779D76" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="amenity" v="grave_yard" zoom-min="15"><area fill="#032800" /><caption k="name" font-size="10" fill="#779D76" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="natural" v="beach|sand"  zoom-min="14"><area fill="#1E1C00" /></rule>
+  <rule e="way" k="natural" v="water" zoom-min="14"><caption k="name" font-size="11" font-style="italic" fill="#6496D0" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="waterway" v="river|canal|stream" zoom-min="14"><pathText k="name" font-style="italic" font-size="11" fill="#6496D0" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="amenity" v="place_of_worship" zoom-min="15"><area fill="#302C1D" stroke="#757061" stroke-width="0.8" scale="none" /></rule>
+  <rule e="way" k="building" v="church|cathedral|chapel|mosque|temple|synagogue|religious" zoom-min="15"><caption k="name" font-style="bold" font-size="10" fill="#AF9BBD" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="node" k="amenity" v="place_of_worship" zoom-min="15">
+    <circle radius="3.7" fill="#9278B7" stroke="#000000" stroke-width="1.6" scale-radius="true" />
+    <rule e="any" k="*" v="*" zoom-min="16"><caption k="name" font-size="10" fill="#B7A4D8" stroke="#000000" stroke-width="2" dy="-12" /></rule>
+  </rule>
+  <rule e="node" k="historic" v="*" zoom-min="15">
+    <circle radius="3.4" fill="#91793D" stroke="#000000" stroke-width="1.5" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#B5A278" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="way" k="historic" v="*" zoom-min="15"><caption k="name" font-size="10" fill="#B5A278" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="node" k="tourism" v="*" zoom-min="15">
+    <circle radius="3.1" fill="#938553" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#B3A983" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="way" k="tourism" v="*" zoom-min="15"><caption k="name" font-size="10" fill="#B3A983" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="node" k="leisure" v="*" zoom-min="16">
+    <circle radius="2.8" fill="#1D6B28" stroke="#000000" stroke-width="1.3" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#6AAA78" stroke="#000000" stroke-width="2" dy="-10" />
+  </rule>
+  <rule e="node" k="man_made" v="tower|water_tower|lighthouse|monument|obelisk|bridge" zoom-min="16">
+    <circle radius="2.8" fill="#7A7A7E" stroke="#000000" stroke-width="1.3" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#ACACB2" stroke="#000000" stroke-width="2" dy="-10" />
+  </rule>
+  <rule e="node" k="amenity" v="*" zoom-min="17">
+    <circle radius="2.5" fill="#737C97" stroke="#000000" stroke-width="1.2" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#A3ABC3" stroke="#000000" stroke-width="2" dy="-10" />
+  </rule>
+  <rule e="node" k="craft" v="*" zoom-min="17">
+    <circle radius="2.5" fill="#897453" stroke="#000000" stroke-width="1.2" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#B5A794" stroke="#000000" stroke-width="2" dy="-10" />
+  </rule>
+  <rule e="node" k="healthcare" v="*" zoom-min="16">
+    <circle radius="3.1" fill="#B95744" stroke="#000000" stroke-width="1.4" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#EBA197" stroke="#000000" stroke-width="2" dy="-11" />
+  </rule>
+  <rule e="way" k="amenity" v="*" zoom-min="17"><caption k="name" font-size="10" fill="#A3ABC3" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="shop" v="*" zoom-min="17"><caption k="name" font-size="10" fill="#E49CC1" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="office" v="*" zoom-min="17"><caption k="name" font-size="10" fill="#A3ABC3" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="man_made" v="*" zoom-min="17"><caption k="name" font-size="10" fill="#ACACB2" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="landuse" v="*" zoom-min="16"><caption k="name" font-size="10" fill="#98989D" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="highway" v="bus_stop|platform|rest_area|services" zoom-min="16"><caption k="name" font-size="10" fill="#9FADC8" stroke="#000000" stroke-width="2" /></rule>
+  <rule e="way" k="railway" v="rail|station|tram" zoom-min="12"><line stroke="#6C6C6F" stroke-width="1.4" stroke-dasharray="6,4" /></rule>
+  <rule e="node" k="railway" v="station|halt|tram_stop" zoom-min="14">
+    <circle radius="3.7" fill="#8289B0" stroke="#000000" stroke-width="1.6" scale-radius="true" />
+    <caption k="name" font-size="10" fill="#AAB0D1" stroke="#000000" stroke-width="2" dy="-12" />
+  </rule>
+  <rule e="node" k="place" v="*" zoom-min="15"><caption k="name" font-size="11" fill="#A087C2" stroke="#000000" stroke-width="2.2" /></rule>
+  <rule e="node" k="name" v="*" zoom-min="18">
+    <circle radius="1.9" fill="#6C6C6F" stroke="#000000" stroke-width="1" scale-radius="true" />
+    <caption k="name" font-size="9" fill="#ACACB2" stroke="#000000" stroke-width="1.8" dy="-8" />
+  </rule>
+</rendertheme>

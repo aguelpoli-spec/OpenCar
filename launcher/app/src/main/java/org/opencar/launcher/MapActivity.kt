@@ -181,7 +181,10 @@ class MapActivity : Activity(), LocationListener {
         val dm = resources.displayMetrics
         sc = min(dm.widthPixels / 1024f, dm.heightPixels / 600f)
         if (!gfxReady) { LiveMap.ensureGfx(this); gfxReady = true }
-        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN or android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(if (night) 0xFF0E1116.toInt() else 0xFFE8EAED.toInt()))
+        try { window.statusBarColor = Color.TRANSPARENT; window.navigationBarColor = Color.TRANSPARENT } catch (e: Throwable) { }
+        if (android.os.Build.VERSION.SDK_INT >= 28) try { window.attributes = window.attributes.also { it.layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS } } catch (e: Throwable) { }
         root = FrameLayout(this).apply { setBackgroundColor(if (night) 0xFF0E1116.toInt() else 0xFFE8EAED.toInt()) }
         holder = FrameLayout(this)
         root.addView(holder, FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
@@ -200,10 +203,11 @@ class MapActivity : Activity(), LocationListener {
                 window.setDecorFitsSystemWindows(false)
                 window.insetsController?.hide(WindowInsets.Type.systemBars())
                 window.insetsController?.systemBarsBehavior = android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            } else {
-                @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
             }
+            // también las banderas clásicas: algunas pantallas de auto reservan el espacio de la barra aunque esté oculta
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         } catch (e: Throwable) { }
     }
 
@@ -328,8 +332,8 @@ class MapActivity : Activity(), LocationListener {
         mv.mapScaleBar.isVisible = false
         mv.setBuiltInZoomControls(false)
         mv.model.displayModel.setUserScaleFactor(1.3f)
-        val tc = AndroidUtil.createTileCache(this, "opencar_map", mv.model.displayModel.tileSize, 1f, mv.model.frameBufferModel.overdrawFactor)
-        val tl = AndroidUtil.createTileRendererLayer(tc, mv.model.mapViewPosition, mf, LiveMap.theme(this), false, true, false)
+        val tc = AndroidUtil.createTileCache(this, LiveMap.cacheId(this, "opencar_map", night), mv.model.displayModel.tileSize, 2f, mv.model.frameBufferModel.overdrawFactor)
+        val tl = AndroidUtil.createTileRendererLayer(tc, mv.model.mapViewPosition, mf, LiveMap.theme(this, night), false, true, false)
         tl.textScale = 1.25f
         renderer = tl
         mv.layerManager.layers.add(tl)
@@ -363,21 +367,7 @@ class MapActivity : Activity(), LocationListener {
         ensureIndex()
     }
 
-    private fun applyNight(mv: MapView) {
-        if (!night) { mv.setLayerType(View.LAYER_TYPE_NONE, null); return }
-        // invertir colores y girar el tono: noche con los azules y verdes en su sitio
-        val inv = ColorMatrix(floatArrayOf(-1f, 0f, 0f, 0f, 255f, 0f, -1f, 0f, 0f, 255f, 0f, 0f, -1f, 0f, 255f, 0f, 0f, 0f, 1f, 0f))
-        val a = Math.toRadians(190.0); val c = cos(a).toFloat(); val s = Math.sin(a).toFloat()
-        val hue = ColorMatrix(floatArrayOf(
-            0.213f + c * 0.787f - s * 0.213f, 0.715f - c * 0.715f - s * 0.715f, 0.072f - c * 0.072f + s * 0.928f, 0f, 0f,
-            0.213f - c * 0.213f + s * 0.143f, 0.715f + c * 0.285f + s * 0.140f, 0.072f - c * 0.072f - s * 0.283f, 0f, 0f,
-            0.213f - c * 0.213f - s * 0.787f, 0.715f - c * 0.715f + s * 0.715f, 0.072f + c * 0.928f + s * 0.072f, 0f, 0f,
-            0f, 0f, 0f, 1f, 0f))
-        inv.postConcat(hue)
-        val dim = ColorMatrix().apply { setScale(0.92f, 0.92f, 0.95f, 1f) }
-        inv.postConcat(dim)
-        mv.setLayerType(View.LAYER_TYPE_HARDWARE, Paint().apply { colorFilter = ColorMatrixColorFilter(inv) })
-    }
+    private fun applyNight(mv: MapView) { mv.setLayerType(View.LAYER_TYPE_NONE, null) }
 
     /** Si todavía no se indexó esta zona, se hace en segundo plano para poder buscar calles sin internet. */
     private fun ensureIndex() {
@@ -850,7 +840,15 @@ class MapActivity : Activity(), LocationListener {
 
     private fun navTick() {
         val r = route ?: return
-        if (myLat.isNaN()) return
+        if (myLat.isNaN()) {
+            // todavía sin GPS: muestra ya el primer giro y los totales de la ruta (no se queda en blanco)
+            val first = r.hints.firstOrNull { it.cmd != 1 && it.cmd != 16 }
+            if (first != null) { arrow.cmd = first.cmd; arrow.invalidate(); bigDist?.text = fmtDist(first.distFromStart); bigText?.text = textFor(first) }
+            else { arrow.cmd = 1; arrow.invalidate(); bigDist?.text = fmtDist(r.distance.toDouble()); bigText?.text = "Sigue hasta tu destino: $destName" }
+            etaT?.text = etaClock(r.seconds); remT?.text = "${max(1, r.seconds / 60)} min"; kmT?.text = fmtKm(r.distance.toDouble())
+            speedT?.text = "0 km/h"
+            return
+        }
         val n = r.lats.size
         // punto más cercano de la ruta (ventana alrededor del último)
         val k = 111320.0; val kx = k * cos(Math.toRadians(myLat))
