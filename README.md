@@ -11,7 +11,7 @@ Funciona sin internet una vez descargado el mapa de tu región.
 **Probado** en la pantalla Android de un Nissan Rogue 2013 (7″, 1024×600). Otros autos y pantallas deberían funcionar, pero aún no tenemos reportes: ¡cuéntanos en Issues!
 
 ## Capturas
-> Capturas generadas con datos de ejemplo (sin información personal).
+> Capturas generadas con datos de ejemplo (sin información personal), simulando una pantalla de 7″ 1024×600.
 
 | Inicio | Mi auto |
 |---|---|
@@ -21,9 +21,25 @@ Funciona sin internet una vez descargado el mapa de tu región.
 |---|---|
 | ![Mapas](docs/screenshots/mapas.png) | ![Música](docs/screenshots/musica.png) |
 
-| Viaje y telemetría |
-|---|
-| ![Viaje](docs/screenshots/viaje.png) |
+| Viaje y telemetría | Diagnóstico y ajustes |
+|---|---|
+| ![Viaje](docs/screenshots/viaje.png) | ![Diagnóstico](docs/screenshots/diagnostico.png) |
+
+| Asistente CarPlay | Ecualizador y mezcla DJ |
+|---|---|
+| ![CarPlay](docs/screenshots/carplay.png) | ![Ecualizador](docs/screenshots/ecualizador.png) |
+
+### Modos de interfaz
+| Ejecutivo | Pink Rouse |
+|---|---|
+| ![Ejecutivo](docs/screenshots/modo-ejecutivo.png) | ![Pink Rouse](docs/screenshots/modo-pink-rouse.png) |
+
+| Viaje | Sport |
+|---|---|
+| ![Modo viaje](docs/screenshots/modo-viaje.png) | ![Sport](docs/screenshots/modo-sport.png) |
+
+### Modo manejo
+![Modo manejo](docs/screenshots/modo-manejo.png)
 
 ## Compatibilidad con Android
 | App | Android mínimo | Nota |
