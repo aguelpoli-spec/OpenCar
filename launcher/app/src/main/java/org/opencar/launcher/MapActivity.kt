@@ -336,11 +336,14 @@ class MapActivity : Activity(), LocationListener {
         mv.mapScaleBar.isVisible = false
         mv.setBuiltInZoomControls(false)
         mv.model.displayModel.setUserScaleFactor(1.3f)
+        val sn0 = try { Sentido(MapData.mapFile(this)) } catch (e: Throwable) { null }
+        sentido = sn0
         val tc = AndroidUtil.createTileCache(this, LiveMap.cacheId(this, "opencar_map", night), mv.model.displayModel.tileSize, 2f, mv.model.frameBufferModel.overdrawFactor)
-        val tl = AndroidUtil.createTileRendererLayer(tc, mv.model.mapViewPosition, mf, LiveMap.theme(this, night), false, true, false)
+        val tl = AndroidUtil.createTileRendererLayer(tc, mv.model.mapViewPosition, mf, LiveMap.theme(this, night, sn0 != null), false, true, false)
         tl.textScale = 1.25f
         renderer = tl
         mv.layerManager.layers.add(tl)
+        sn0?.let { sn -> mv.layerManager.layers.add(sn.NombresLayer(sc, night) { mapView?.rotation ?: 0f }) }
         val gf = AndroidGraphicFactory.INSTANCE
         fun paint(color: Int, w: Float) = gf.createPaint().apply { setColor(color); strokeWidth = w * sc; setStyle(Style.STROKE); setStrokeCap(Cap.ROUND) }
         casing = Polyline(paint(if (night) 0xFF06202A.toInt() else Color.WHITE, 15f), gf)
@@ -348,10 +351,7 @@ class MapActivity : Activity(), LocationListener {
         mv.layerManager.layers.add(casing)
         mv.layerManager.layers.add(routeLine)
         rutaFlechas = RutaFlechas().also { mv.layerManager.layers.add(it) }
-        try {
-            val sn = Sentido(MapData.mapFile(this)); sentido = sn
-            mv.layerManager.layers.add(sn.FlechasLayer(sc))
-        } catch (e: Throwable) { }
+        sn0?.let { sn -> mv.layerManager.layers.add(sn.FlechasLayer(sc)) }
         destLayer = DestLayer().also { mv.layerManager.layers.add(it) }
         posLayer = PosLayer().also { mv.layerManager.layers.add(it) }
         holder.addView(mv, FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
@@ -430,7 +430,9 @@ class MapActivity : Activity(), LocationListener {
     private fun routeBearing(): Float? {
         val r = route ?: return null
         val n = r.lats.size; if (n < 2) return null
-        val i = lastIdx.coerceIn(0, n - 2); val j = min(n - 1, i + 3)
+        val i = lastIdx.coerceIn(0, n - 2); var j = i + 1
+        val kx0 = cos(Math.toRadians(r.lats[i])) * 111320.0
+        while (j < n - 1 && hypot((r.lons[j] - r.lons[i]) * kx0, (r.lats[j] - r.lats[i]) * 111320.0) < 8.0) j++   // el tramo de la calle donde estás (no el de después de la esquina)
         val dy = r.lats[j] - r.lats[i]; val dx = (r.lons[j] - r.lons[i]) * cos(Math.toRadians(r.lats[i]))
         if (abs(dx) < 1e-9 && abs(dy) < 1e-9) return null
         return ((Math.toDegrees(atan2(dx, dy)) + 360.0) % 360.0).toFloat()
@@ -444,7 +446,7 @@ class MapActivity : Activity(), LocationListener {
         posLayer?.set(myLat, myLon, bearSm)
         val on = navigating || follow
         if (on != headUp) setNavView(on)
-        mapView?.let { mv -> if (headUp) mv.rotation = -bearSm }
+        mapView?.let { mv -> if (headUp) { mv.rotation = -bearSm; mv.layerManager.redrawLayers() } }
     }
 
     private fun centerOnMe(zoom: Boolean) {

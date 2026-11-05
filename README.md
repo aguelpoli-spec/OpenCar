@@ -31,11 +31,15 @@ Modo noche (tema propio, calles claras sobre fondo oscuro):
 
 ![Mapa de noche](docs/screenshots/mapa-noche.png)
 
-Navegación (ruta real calculada por el enrutador de la app sobre el mapa sin internet; el auto apunta hacia donde avanzas, el mapa gira para que siempre veas hacia adelante, las flechas blancas marcan el sentido de la ruta y las azules las calles de un solo sentido; el banner y los paneles son una maqueta):
+Navegación (ruta real calculada por el enrutador de la app sobre el mapa sin internet; el auto apunta hacia donde avanzas, el mapa gira para que siempre veas hacia adelante y los nombres de calles y lugares quedan siempre derechos, las flechas blancas marcan el sentido de la ruta y las azules las calles de un solo sentido; el banner y los paneles son una maqueta):
 
 | Día | Noche |
 |---|---|
 | ![Navegación de día](docs/screenshots/mapa-navegacion.png) | ![Navegación de noche](docs/screenshots/mapa-navegacion-noche.png) |
+
+Irse hacia el sur: el mapa queda girado y aun así todos los nombres se leen derechos.
+
+![Navegación hacia el sur](docs/screenshots/mapa-navegacion-sur.png)
 
 | Viaje y telemetría | Diagnóstico y ajustes |
 |---|---|

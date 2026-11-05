@@ -137,13 +137,21 @@ class LiveMap(ctx: Context, private val sc: Float, private val acc: Int, private
             return ok
         }
 
+        /** Abre un tema; con sinNombres quita todos los rótulos pegados al dibujo (calles, lugares, edificios) (los pone Sentido.NombresLayer, siempre derechos). */
+        private fun abrir(ctx: Context, name: String, sinNombres: Boolean): java.io.InputStream {
+            val ins = ctx.assets.open(name)
+            if (!sinNombres) return ins
+            val txt = ins.bufferedReader(Charsets.UTF_8).use { it.readText() }
+            return java.io.ByteArrayInputStream(txt.replace(Regex("<(pathText|caption)\\b[^>]*/>"), "").toByteArray(Charsets.UTF_8))
+        }
+
         /** Tema del mapa; de noche usa su propio tema (colores pensados para oscuro) en vez de filtrar toda la vista. */
-        fun theme(ctx: Context, night: Boolean = false): org.mapsforge.map.rendertheme.XmlRenderTheme {
+        fun theme(ctx: Context, night: Boolean = false, sinNombres: Boolean = false): org.mapsforge.map.rendertheme.XmlRenderTheme {
             val sfx = if (night) "_noche" else ""
             return try {
                 ensureGfx(ctx)
-                if (iconsOn(ctx) && iconThemeWorks(ctx)) org.mapsforge.map.rendertheme.StreamRenderTheme("", ctx.assets.open("map/calles$sfx.xml"))
-                else org.mapsforge.map.rendertheme.StreamRenderTheme("/", ctx.assets.open("map/calles_basico$sfx.xml"))
+                if (iconsOn(ctx) && iconThemeWorks(ctx)) org.mapsforge.map.rendertheme.StreamRenderTheme("", abrir(ctx, "map/calles$sfx.xml", sinNombres))
+                else org.mapsforge.map.rendertheme.StreamRenderTheme("/", abrir(ctx, "map/calles_basico$sfx.xml", sinNombres))
             } catch (e: Throwable) { try { org.mapsforge.map.rendertheme.StreamRenderTheme("/", ctx.assets.open("map/calles_basico$sfx.xml")) } catch (e2: Throwable) { InternalRenderTheme.DEFAULT } }
         }
 
