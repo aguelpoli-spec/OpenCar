@@ -3065,7 +3065,7 @@ class MainActivity : Activity() {
             val col = if (est.pct < 10) red else if (est.pct < 22) amber else green
             c.addView(txt(String.format(Locale.US, "%.0f L · %d%%", est.liters, est.pct), 18f, col, true).apply { maxLines = 1; isSingleLine = true })
             c.addView(ThinBar(this).apply { trackC = th.track; fillC = col; frac = est.pct / 100f }, LinearLayout.LayoutParams(MATCH_PARENT, p(6)).apply { topMargin = p(3) })
-            c.addView(txt("≈ ${est.rangeKm} km", 12f, th.fgSoft).apply { maxLines = 1; setPadding(0, p(3), 0, 0) })
+            c.addView(txt("≈ ${est.rangeKm} km" + GasActivity.kmPerL(prefs).let { if (it > 0) " · " + String.format(Locale.US, "%.1f km/L", it).replace('.', ',') else "" }, 12f, th.fgSoft).apply { maxLines = 1; setPadding(0, p(3), 0, 0) })
             if (lf != null && s.h >= 80f) c.addView(txt("Cargó " + java.text.SimpleDateFormat("dd/MM", Locale.US).format(java.util.Date(lf.optLong("t"))) + " · " + Combustible.cur(prefs) + " " + lf.optDouble("bs", 0.0).toInt(), 11f, th.fgSoft).apply { maxLines = 1 })
         }
         return c

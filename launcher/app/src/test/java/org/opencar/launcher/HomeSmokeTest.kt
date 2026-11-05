@@ -33,16 +33,16 @@ class HomeSmokeTest {
         shadowOf(Looper.getMainLooper()).idle()
         val l = layer(a)
         assertNotNull("la capa de widgets debe existir", l)
-        assertEquals(13, l!!.specList().size)
+        assertEquals(12, l!!.specList().size)
         // modo edición, agregar, quitar y restablecer
         l.enterEdit("mapa"); assertTrue(l.editing)
         l.add("clima"); assertTrue(l.has("clima"))
         l.exitEdit(); assertFalse(l.editing)
-        assertEquals(14, WStore.load(a.getSharedPreferences("launcher", 0)).size)
+        assertEquals(13, WStore.load(a.getSharedPreferences("launcher", 0)).size)
         // se vuelve a dibujar todo sin fallar
         call(a, "render")
         shadowOf(Looper.getMainLooper()).idle()
-        assertEquals(14, layer(a)!!.specList().size)
+        assertEquals(13, layer(a)!!.specList().size)
         l.rebuildAll()
     }
 
@@ -65,12 +65,15 @@ class HomeSmokeTest {
 
     @Test fun restablecerYLayoutGuardado() {
         val p = org.robolectric.RuntimeEnvironment.getApplication().getSharedPreferences("t", 0)
-        val d = WStore.defaults(); assertEquals(12, d.size)
+        val d = WStore.defaults(); assertEquals(11, d.size)
         d[0].x = 5000f; d[0].w = 20f
         WStore.save(p, d)
         val back = WStore.load(p)
         assertTrue(back[0].x <= WStore.W - back[0].w); assertTrue(back[0].w >= WStore.def(back[0].id)!!.minW)
-        WStore.reset(p); assertEquals(12, WStore.load(p).size)
+        WStore.reset(p); assertEquals(11, WStore.load(p).size)
+        // diseño viejo con «Consumo»: se quita y «Cambio de aceite» se ensancha
+        p.edit().putString("widgets_v2", """[{"id":"aceite","x":704,"y":344,"w":146,"h":60},{"id":"cons","x":858,"y":344,"w":146,"h":60}]""").commit()
+        val mig = WStore.load(p); assertEquals(1, mig.size); assertEquals(300f, mig[0].w, 0.5f)
     }
 }
 

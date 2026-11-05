@@ -45,8 +45,7 @@ object WStore {
         Def("park", "Dónde estacioné", "Guarda dónde dejaste el auto", 704f, 44f, 300f, 52f, 190f, 46f),
         Def("mapa", "Mapa en vivo", "Rumbo, recorrido y datos del viaje", 704f, 102f, 300f, 160f, 190f, 100f),
         Def("acc", "Accesos rápidos", "Gasolinera · Música · Mapas", 704f, 270f, 300f, 66f, 190f, 56f),
-        Def("aceite", "Cambio de aceite", "Cuánto falta", 704f, 344f, 146f, 60f, 100f, 50f),
-        Def("cons", "Consumo", "km/L del registro de gasolina", 858f, 344f, 146f, 60f, 100f, 50f),
+        Def("aceite", "Cambio de aceite", "Cuánto falta", 704f, 344f, 300f, 60f, 100f, 50f),
         Def("player", "Reproductor", "OpenCar Music", 14f, 506f, 730f, 84f, 300f, 60f),
         Def("dock", "Menú y apps", "Menú · Apps · CarPlay · Ajustes · Fondos", 752f, 506f, 258f, 84f, 200f, 60f),
         // extras para agregar desde la galería
@@ -67,14 +66,16 @@ object WStore {
         val s = p.getString(KEY, null) ?: return defaults()
         return try {
             val a = JSONArray(s)
-            val out = ArrayList<WSpec>()
+            val out = ArrayList<WSpec>(); var hadCons = false
             for (i in 0 until a.length()) {
                 val o = a.getJSONObject(i)
                 val id = o.getString("id")
+                if (id == "cons") { hadCons = true; continue }   // Consumo ya va dentro de Combustible
                 val d = def(id) ?: continue
                 out.add(WSpec(id, o.getDouble("x").toFloat(), o.getDouble("y").toFloat(),
                     o.getDouble("w").toFloat().coerceIn(d.minW, W), o.getDouble("h").toFloat().coerceIn(d.minH, H)))
             }
+            if (hadCons) out.firstOrNull { it.id == "aceite" }?.let { if (it.w < 200f) it.w = (W - it.x).coerceAtMost(300f) }
             out.forEach { it.x = it.x.coerceIn(0f, W - it.w); it.y = it.y.coerceIn(0f, H - it.h) }
             out
         } catch (e: Exception) { defaults() }
