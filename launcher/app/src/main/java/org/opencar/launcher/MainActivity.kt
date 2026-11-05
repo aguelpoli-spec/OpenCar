@@ -2806,8 +2806,9 @@ class MainActivity : Activity() {
             // toque: dices cómo están las luces AHORA; si la señal de la radio dice lo contrario, se corrige sola; mantener pulsado = ajustes
             setOnClickListener {
                 AlertDialog.Builder(this@MainActivity).setTitle("¿Cómo están las luces ahora?")
-                    .setItems(arrayOf("💡 Encendidas", "Apagadas", "Ajustes de luces…")) { _, w ->
+                    .setItems(arrayOf("💡 Encendidas", "Apagadas", "Ajustes y detección de luces…", "Cómo conectar las luces de mi auto")) { _, w ->
                         if (w == 2) { nightSettings(); return@setItems }
+                        if (w == 3) { lightsHelp(); return@setItems }
                         val on = w == 0
                         val fixed = Luces.learn(this@MainActivity, prefs, on)
                         if (!Luces.hasSignal(this@MainActivity, prefs)) Luces.setManual(prefs, on)
@@ -3188,6 +3189,23 @@ class MainActivity : Activity() {
     }
 
     // ---- ajustes del modo noche + diagnóstico de luces
+    /** Instrucciones para cualquier auto: depende de que la radio exponga el estado de las luces a Android. */
+    private fun lightsHelp() {
+        val tx = "Para que el resplandor de los faros siga tus luces reales, el launcher necesita que tu radio avise a Android cuando las luces se encienden. Cada radio lo hace distinto, por eso se detecta así:\n\n" +
+            "1. Abre «Ajustes y detección de luces».\n" +
+            "2. Con las luces APAGADAS pulsa «1 · Tomar lectura».\n" +
+            "3. ENCIENDE las luces del auto y pulsa «2 · Tomar lectura».\n" +
+            "4. Pulsa «3 · Comparar» y elige el ajuste que cambió (los primeros de la lista suelen ser de luces: beam, lamp, light, illum, backlight).\n" +
+            "5. Toca el widget de luces y di cómo están: si sale al revés, se corrige sola.\n\n" +
+            "Si no aparece ningún cambio:\n" +
+            "• En los ajustes de tu radio busca opciones como «Luces / Faros», «Brillo automático», «Modo noche con las luces» o «Iluminación de la pantalla» y actívalas; vuelve a tomar las lecturas.\n" +
+            "• Prueba «Vigilar cambios EN VIVO» y enciende/apaga las luces varias veces.\n" +
+            "• Muchas radios no entregan este dato (la señal va por el bus del auto y no llega a Android). Es normal: entonces usa el toque en el widget para marcar tú si las luces están encendidas o apagadas.\n\n" +
+            "El launcher nunca adivina por la hora: sin señal ni marca tuya, el resplandor queda apagado."
+        AlertDialog.Builder(this).setTitle("Conectar las luces de tu auto").setMessage(tx).setPositiveButton("Entendido", null)
+            .setNeutralButton("Abrir detección") { _, _ -> nightSettings() }.show()
+    }
+
     private fun nightSettings() {
         val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(p(20), p(8), p(20), p(4)) }
         fun sw(title: String, sub: String, key: String, def: Boolean) {
@@ -3274,7 +3292,7 @@ class MainActivity : Activity() {
             if (a == null || b == null) { toast("Falta tomar una de las dos lecturas"); return@btn }
             val d = Luces.diff(a, b)
             if (d.isEmpty()) {
-                AlertDialog.Builder(this).setTitle("Sin cambios").setMessage("Tu radio no cambió ningún ajuste al encender las luces. No entrega ese dato: el launcher usará el atardecer (GPS) y mostrará «Anocheció, enciende las luces».").setPositiveButton("Entendido", null).show()
+                AlertDialog.Builder(this).setTitle("Sin cambios").setMessage("Tu radio no cambió ningún ajuste al encender las luces. Revisa que en los ajustes de la radio estén activadas las opciones de luces/faros/brillo automático y repite las lecturas. Si sigue igual, tu radio no entrega ese dato: toca el widget de luces para marcarlas tú (el launcher no adivina por la hora).").setPositiveButton("Entendido", null).show()
             } else {
                 val likely = Regex("beam|lamp|light|illum|headl|night|backlight|ill_")
                 val top = d.sortedBy { if (likely.containsMatchIn(it.key.lowercase())) 0 else 1 }.take(15)

@@ -95,6 +95,16 @@ Dos apps en un solo repositorio:
 - **Asistente de voz sin internet**: «Hey <marca de tu auto>», con voz del sistema o con tus propias grabaciones (`res/raw/voz_*.mp3`).
 - Gasolina (consumo y costo en tu moneda), recordatorios de mantenimiento, documentos, calendario con feriados de tu país.
 
+## Luces del auto y resplandor de faros
+
+El fondo de pantalla muestra el brillo de los faros cuando las luces del auto están encendidas. Para saberlo, la radio debe avisar a Android del estado de las luces; no todas lo hacen.
+
+1. Toca el widget de luces → **Ajustes y detección de luces**.
+2. Con las luces apagadas pulsa «1 · Tomar lectura»; enciéndelas y pulsa «2 · Tomar lectura»; luego «3 · Comparar» y elige el ajuste que cambió (los primeros suelen ser de luces).
+3. Toca el widget y marca cómo están las luces: si la señal sale al revés, se corrige sola.
+
+Si no aparece ningún cambio, activa en los ajustes de tu radio las opciones de luces/faros/brillo automático y repite. Si tu radio no entrega el dato, usa el toque en el widget para marcar tú las luces. Nunca se adivina por la hora.
+
 ## Compilar
 Requisitos: JDK 17, Android SDK (API 34). En cada carpeta (`launcher/` y `music/`):
 ```
