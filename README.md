@@ -31,7 +31,7 @@ Modo noche (tema propio, calles claras sobre fondo oscuro):
 
 ![Mapa de noche](docs/screenshots/mapa-noche.png)
 
-Navegación (maqueta con el motor real del mapa; el auto apunta hacia donde avanzas y el mapa gira para que siempre veas hacia adelante):
+Navegación (ruta real calculada por el enrutador de la app sobre el mapa sin internet; el auto apunta hacia donde avanzas, el mapa gira para que siempre veas hacia adelante, las flechas blancas marcan el sentido de la ruta y las azules las calles de un solo sentido; el banner y los paneles son una maqueta):
 
 | Día | Noche |
 |---|---|

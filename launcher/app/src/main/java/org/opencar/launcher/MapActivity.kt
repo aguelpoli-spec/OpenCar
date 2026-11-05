@@ -130,6 +130,7 @@ class MapActivity : Activity(), LocationListener {
     private var casing: Polyline? = null
     private var routeLine: Polyline? = null
     private var posLayer: PosLayer? = null
+    private var rutaFlechas: RutaFlechas? = null
     private var destLayer: DestLayer? = null
 
     // interfaz
@@ -346,6 +347,7 @@ class MapActivity : Activity(), LocationListener {
         routeLine = Polyline(paint(if (night) 0xFF00B8D4.toInt() else 0xFF1A73E8.toInt(), 9f), gf)
         mv.layerManager.layers.add(casing)
         mv.layerManager.layers.add(routeLine)
+        rutaFlechas = RutaFlechas().also { mv.layerManager.layers.add(it) }
         try {
             val sn = Sentido(MapData.mapFile(this)); sentido = sn
             mv.layerManager.layers.add(sn.FlechasLayer(sc))
@@ -744,7 +746,7 @@ class MapActivity : Activity(), LocationListener {
     private fun showRoute(r: OpenCarRouter.Result, autoStart: Boolean) {
         route = r; lastIdx = 0; offCount = 0; spoken.clear()
         val pts = r.lats.indices.map { LatLong(r.lats[it], r.lons[it]) }
-        casing?.setPoints(pts); routeLine?.setPoints(pts)
+        casing?.setPoints(pts); routeLine?.setPoints(pts); rutaFlechas?.set(r.lats, r.lons)
         destLayer?.set(destLat, destLon)
         val mv = mapView ?: return
         mv.layerManager.redrawLayers()
@@ -763,7 +765,7 @@ class MapActivity : Activity(), LocationListener {
 
     private fun clearRoute() {
         route = null; navigating = false
-        casing?.setPoints(emptyList()); routeLine?.setPoints(emptyList()); destLayer?.set(Double.NaN, Double.NaN)
+        casing?.setPoints(emptyList()); routeLine?.setPoints(emptyList()); rutaFlechas?.set(null, null); destLayer?.set(Double.NaN, Double.NaN)
         previewCard?.visibility = View.GONE; navBanner?.visibility = View.GONE; navBottom?.visibility = View.GONE
         topUi?.visibility = View.VISIBLE; fabCol?.visibility = View.VISIBLE
         setNavView(false)
@@ -899,7 +901,7 @@ class MapActivity : Activity(), LocationListener {
             if (d < bd) { bd = d; best = i; along = r.cum[i] + t * (r.cum[i + 1] - r.cum[i]) }
         }
         if (bd < 60) { lastIdx = best; offCount = 0 } else offCount++
-        if (offCount >= 5 && !rerouting) { rerouting = true; VozClips.play(this, "recalc"); offCount = 0
+        if (offCount >= 3 && !rerouting) { rerouting = true; VozClips.play(this, "recalc"); offCount = 0
             val dn = destName; val dl = destLat; val dlo = destLon
             Thread {
                 val rr = OpenCarRouter.route(MapData.segDir(this), MapData.profile(this).absolutePath, myLat, myLon, dl, dlo, 60000L)
@@ -1024,6 +1026,45 @@ class MapActivity : Activity(), LocationListener {
             val pt = Paint(Paint.ANTI_ALIAS_FLAG)
             pt.color = (acc and 0x00FFFFFF) or 0x30000000; c.drawCircle(x, y, 34f * sc, pt)
             CarIcon.draw(c, x, y, bearing, sc, acc, 0.72f)
+        }
+    }
+
+    /** Flechas blancas sobre la ruta: muestran el sentido en que debes recorrerla. */
+    inner class RutaFlechas : Layer() {
+        private var la: DoubleArray? = null; private var lo: DoubleArray? = null
+        private val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE; style = Paint.Style.FILL }
+        private val edge = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFF0B3A8A.toInt(); style = Paint.Style.STROKE; strokeWidth = 1.5f * sc }
+        fun set(a: DoubleArray?, o: DoubleArray?) { la = a; lo = o; requestRedraw() }
+        override fun draw(bb: BoundingBox, z: Byte, canvas: org.mapsforge.core.graphics.Canvas, tl: Point) {
+            val a = la ?: return; val o = lo ?: return
+            if (a.size < 2 || z < 14) return
+            val ms = MercatorProjection.getMapSize(z, displayModel.tileSize)
+            val c = AndroidGraphicFactory.getCanvas(canvas)
+            val step = 70f * sc; val s = 5.2f * sc
+            var acc = step / 2
+            var px = (MercatorProjection.longitudeToPixelX(o[0], ms) - tl.x).toFloat(); var py = (MercatorProjection.latitudeToPixelY(a[0], ms) - tl.y).toFloat()
+            for (i in 1 until a.size) {
+                val x = (MercatorProjection.longitudeToPixelX(o[i], ms) - tl.x).toFloat(); val y = (MercatorProjection.latitudeToPixelY(a[i], ms) - tl.y).toFloat()
+                val len = hypot(x - px, y - py)
+                if (len >= 1f) {
+                    val ux = (x - px) / len; val uy = (y - py) / len
+                    var d = acc
+                    while (d < len) {
+                        val cx = px + ux * d; val cy = py + uy * d
+                        if (cx > -20 && cy > -20 && cx < c.width + 20 && cy < c.height + 20) {
+                            val p = Path()
+                            p.moveTo(cx + ux * s * 1.2f, cy + uy * s * 1.2f)
+                            p.lineTo(cx - ux * s * 0.8f - uy * s, cy - uy * s * 0.8f + ux * s)
+                            p.lineTo(cx - ux * s * 0.2f, cy - uy * s * 0.2f)
+                            p.lineTo(cx - ux * s * 0.8f + uy * s, cy - uy * s * 0.8f - ux * s)
+                            p.close(); c.drawPath(p, fill); c.drawPath(p, edge)
+                        }
+                        d += step
+                    }
+                    acc = d - len
+                }
+                px = x; py = y
+            }
         }
     }
 

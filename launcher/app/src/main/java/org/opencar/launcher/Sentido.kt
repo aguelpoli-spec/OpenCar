@@ -95,7 +95,7 @@ class Sentido(file: File) {
             if ((x1 - x0 + 1) * (y1 - y0 + 1) > 36) return
             val ms = MercatorProjection.getMapSize(zoom, displayModel.tileSize)
             val c = AndroidGraphicFactory.getCanvas(canvas)
-            val step = 120f * sc; val sz = 5.5f * sc
+            val step = 100f * sc; val sz = 7f * sc
             for (tx in x0..x1) for (ty in y0..y1) for (s in tileSegs(tx, ty)) {
                 if (s.dir == 0) continue
                 var acc = step / 2
