@@ -369,7 +369,7 @@ class MainActivity : Activity() {
             setPadding(p(16), p(8), p(16), p(8)); isClickable = true
             background = GradientDrawable().apply { cornerRadius = p(20).toFloat(); setColor(Color.parseColor("#33FFFFFF")); setStroke(max(1, p(1)), Color.parseColor("#66FFFFFF")) }
             setOnClickListener { setDrive(false) }
-        }, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.TOP or Gravity.END).apply { setMargins(0, p(10), p(14), 0) })
+        }, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, p(14), p(16)) })   // abajo a la derecha: arriba lo tapaba la barra de estado
         driveLayer = lay
         return lay
     }
@@ -5017,7 +5017,7 @@ class MainActivity : Activity() {
         header.addView(tile("‹  Inicio", null, 0f, 20f, { page = Page.HOME; render() }),
             LinearLayout.LayoutParams(p(170), p(64)))
         header.addView(TextView(this).apply {
-            text = "Diagnóstico y ajustes  ·  v2.34"
+            text = "Diagnóstico y ajustes  ·  v" + (try { packageManager.getPackageInfo(packageName, 0).versionName } catch (e: Throwable) { "" })
             size(22f); setTextColor(Color.WHITE); typeface = Typeface.DEFAULT_BOLD
             setPadding(p(24), 0, 0, 0)
         })

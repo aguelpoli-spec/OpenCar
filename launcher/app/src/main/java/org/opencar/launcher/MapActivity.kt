@@ -346,8 +346,8 @@ class MapActivity : Activity(), LocationListener {
         sn0?.let { sn -> mv.layerManager.layers.add(sn.NombresLayer(sc, night) { mapView?.rotation ?: 0f }) }
         val gf = AndroidGraphicFactory.INSTANCE
         fun paint(color: Int, w: Float) = gf.createPaint().apply { setColor(color); strokeWidth = w * sc; setStyle(Style.STROKE); setStrokeCap(Cap.ROUND) }
-        casing = Polyline(paint(if (night) 0xFF06202A.toInt() else Color.WHITE, 15f), gf)
-        routeLine = Polyline(paint(if (night) 0xFF00B8D4.toInt() else 0xFF1A73E8.toInt(), 9f), gf)
+        casing = Polyline(paint(if (night) 0xFF06202A.toInt() else Color.WHITE, 18f), gf)
+        routeLine = Polyline(paint(if (night) 0xFF00B8D4.toInt() else 0xFF1A73E8.toInt(), 12f), gf)
         mv.layerManager.layers.add(casing)
         mv.layerManager.layers.add(routeLine)
         rutaFlechas = RutaFlechas().also { mv.layerManager.layers.add(it) }
@@ -1035,14 +1035,13 @@ class MapActivity : Activity(), LocationListener {
     inner class RutaFlechas : Layer() {
         private var la: DoubleArray? = null; private var lo: DoubleArray? = null
         private val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE; style = Paint.Style.FILL }
-        private val edge = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFF0B3A8A.toInt(); style = Paint.Style.STROKE; strokeWidth = 1.5f * sc }
         fun set(a: DoubleArray?, o: DoubleArray?) { la = a; lo = o; requestRedraw() }
         override fun draw(bb: BoundingBox, z: Byte, canvas: org.mapsforge.core.graphics.Canvas, tl: Point) {
             val a = la ?: return; val o = lo ?: return
             if (a.size < 2 || z < 14) return
             val ms = MercatorProjection.getMapSize(z, displayModel.tileSize)
             val c = AndroidGraphicFactory.getCanvas(canvas)
-            val step = 70f * sc; val s = 5.2f * sc
+            val step = 50f * sc; val s = 5.6f * sc
             var acc = step / 2
             var px = (MercatorProjection.longitudeToPixelX(o[0], ms) - tl.x).toFloat(); var py = (MercatorProjection.latitudeToPixelY(a[0], ms) - tl.y).toFloat()
             for (i in 1 until a.size) {
@@ -1059,7 +1058,7 @@ class MapActivity : Activity(), LocationListener {
                             p.lineTo(cx - ux * s * 0.8f - uy * s, cy - uy * s * 0.8f + ux * s)
                             p.lineTo(cx - ux * s * 0.2f, cy - uy * s * 0.2f)
                             p.lineTo(cx - ux * s * 0.8f + uy * s, cy - uy * s * 0.8f - ux * s)
-                            p.close(); c.drawPath(p, fill); c.drawPath(p, edge)
+                            p.close(); c.drawPath(p, fill)
                         }
                         d += step
                     }
