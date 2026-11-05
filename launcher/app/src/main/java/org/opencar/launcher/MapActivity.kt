@@ -1023,7 +1023,7 @@ class MapActivity : Activity(), LocationListener {
             val c = AndroidGraphicFactory.getCanvas(canvas)
             val pt = Paint(Paint.ANTI_ALIAS_FLAG)
             pt.color = (acc and 0x00FFFFFF) or 0x30000000; c.drawCircle(x, y, 34f * sc, pt)
-            CarIcon.draw(c, x, y, bearing, sc, acc)
+            CarIcon.draw(c, x, y, bearing, sc, acc, 0.72f)
         }
     }
 
