@@ -31,6 +31,12 @@ Modo noche (tema propio, calles claras sobre fondo oscuro):
 
 ![Mapa de noche](docs/screenshots/mapa-noche.png)
 
+Navegación (maqueta con el motor real del mapa; el auto apunta hacia donde avanzas y el mapa gira para que siempre veas hacia adelante):
+
+| Día | Noche |
+|---|---|
+| ![Navegación de día](docs/screenshots/mapa-navegacion.png) | ![Navegación de noche](docs/screenshots/mapa-navegacion-noche.png) |
+
 | Viaje y telemetría | Diagnóstico y ajustes |
 |---|---|
 | ![Viaje](docs/screenshots/viaje.png) | ![Diagnóstico](docs/screenshots/diagnostico.png) |
