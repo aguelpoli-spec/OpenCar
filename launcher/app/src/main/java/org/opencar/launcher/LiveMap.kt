@@ -102,12 +102,7 @@ class LiveMap(ctx: Context, private val sc: Float, private val acc: Int, private
             val c = AndroidGraphicFactory.getCanvas(canvas)
             val pt = Paint(Paint.ANTI_ALIAS_FLAG)
             pt.color = (acc and 0x00FFFFFF) or 0x30000000; c.drawCircle(x, y, 26f * sc, pt)
-            c.save(); c.rotate(bearing, x, y)
-            val s = 13f * sc
-            val path = android.graphics.Path(); path.moveTo(x, y - s * 1.3f); path.lineTo(x + s, y + s); path.lineTo(x, y + s * 0.45f); path.lineTo(x - s, y + s); path.close()
-            pt.color = Color.WHITE; pt.style = Paint.Style.FILL_AND_STROKE; pt.strokeWidth = 4f * sc; c.drawPath(path, pt)
-            pt.color = acc; pt.style = Paint.Style.FILL; c.drawPath(path, pt)
-            c.restore()
+            CarIcon.draw(c, x, y, bearing, sc, acc, 0.75f)
         }
     }
 

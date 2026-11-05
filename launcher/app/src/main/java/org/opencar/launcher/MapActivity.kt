@@ -163,6 +163,9 @@ class MapActivity : Activity(), LocationListener {
     private var myLat = Double.NaN
     private var myLon = Double.NaN
     private var myBear = 0f
+    private var bearSm = 0f
+    private var gpsAt = 0L
+    private var headUp = false
     private var mySpeed = 0f
     private var follow = true
     private var navigating = false
@@ -262,7 +265,7 @@ class MapActivity : Activity(), LocationListener {
         fabCol = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         fabCol!!.addView(circleBtn("+") { mapView?.model?.mapViewPosition?.zoomIn() })
         fabCol!!.addView(circleBtn("−") { mapView?.model?.mapViewPosition?.zoomOut() })
-        fabCol!!.addView(circleBtn("◎", 46, acc) { follow = true; centerOnMe(true) })
+        fabCol!!.addView(circleBtn("◎", 46, acc) { follow = true; centerOnMe(true); applyHeading() })
         root.addView(fabCol, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.END or Gravity.TOP).apply { rightMargin = p(16); topMargin = p(70) })
 
         infoToast = tx("", 13f).apply { background = bg(glass, 18, line); setPadding(p(14), p(7), p(14), p(7)); visibility = View.GONE }
@@ -390,26 +393,57 @@ class MapActivity : Activity(), LocationListener {
             }
             val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, this, Looper.getMainLooper())
+            try { if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000L, 0f, this, Looper.getMainLooper()) } catch (e: Exception) { }
+            myBear = prefs.getFloat("map_bear", 0f); bearSm = myBear
             val last = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) ?: lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             if (last != null) onLocationChanged(last)
-            else if (!TripService.lat.isNaN()) { myLat = TripService.lat; myLon = TripService.lon; posLayer?.set(myLat, myLon, 0f); centerOnMe(false) }
+            else {
+                // sin señal todavía: se muestra el auto al instante en la última posición conocida
+                if (!TripService.lat.isNaN()) { myLat = TripService.lat; myLon = TripService.lon }
+                else { val a = prefs.getString("map_lat", null)?.toDoubleOrNull(); val o = prefs.getString("map_lon", null)?.toDoubleOrNull(); if (a != null && o != null) { myLat = a; myLon = o } }
+                if (!myLat.isNaN()) { applyHeading(); centerOnMe(false) }
+            }
         } catch (e: Exception) { }
     }
 
     override fun onRequestPermissionsResult(rc: Int, perms: Array<out String>, res: IntArray) { if (rc == 91) startLocation() }
 
     override fun onLocationChanged(l: Location) {
+        val isGps = l.provider == LocationManager.GPS_PROVIDER
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (isGps) gpsAt = now else if (now - gpsAt < 15000L && !myLat.isNaN()) return   // la red solo sirve mientras no hay GPS
         myLat = l.latitude; myLon = l.longitude
-        mySpeed = l.speed
-        if (l.hasBearing() && l.speed > 1.5f) myBear = l.bearing
-        posLayer?.set(myLat, myLon, if (navigating) 0f else myBear)
+        if (isGps) mySpeed = l.speed
+        if (isGps && l.hasBearing() && l.speed > 1.5f) { myBear = l.bearing; prefs.edit().putFloat("map_bear", myBear).apply() }
+        else if (navigating && mySpeed < 1.5f) routeBearing()?.let { myBear = it }   // parado: mira hacia donde va la ruta
         sentidoTick()
-        if (navigating) navTick() else if (follow) centerOnMe(false)
+        if (navigating) navTick() else { applyHeading(); if (follow) centerOnMe(false) }
         prefs.edit().putString("map_lat", myLat.toString()).putString("map_lon", myLon.toString()).apply()
     }
     @Deprecated("") override fun onStatusChanged(p: String?, s: Int, e: Bundle?) {}
     override fun onProviderEnabled(p: String) {}
     override fun onProviderDisabled(p: String) {}
+
+    /** Rumbo del tramo de ruta donde estás (para orientar el auto cuando aún no te mueves). */
+    private fun routeBearing(): Float? {
+        val r = route ?: return null
+        val n = r.lats.size; if (n < 2) return null
+        val i = lastIdx.coerceIn(0, n - 2); val j = min(n - 1, i + 3)
+        val dy = r.lats[j] - r.lats[i]; val dx = (r.lons[j] - r.lons[i]) * cos(Math.toRadians(r.lats[i]))
+        if (abs(dx) < 1e-9 && abs(dy) < 1e-9) return null
+        return ((Math.toDegrees(atan2(dx, dy)) + 360.0) % 360.0).toFloat()
+    }
+
+    /** El auto apunta a su rumbo y el mapa gira para que siempre veas hacia dónde vas (arriba = adelante). */
+    private fun applyHeading() {
+        if (myLat.isNaN()) return
+        val d = ((myBear - bearSm + 540f) % 360f) - 180f
+        bearSm = (bearSm + d * 0.5f + 360f) % 360f
+        posLayer?.set(myLat, myLon, bearSm)
+        val on = navigating || follow
+        if (on != headUp) setNavView(on)
+        mapView?.let { mv -> if (headUp) mv.rotation = -bearSm }
+    }
 
     private fun centerOnMe(zoom: Boolean) {
         val mv = mapView ?: return
@@ -801,6 +835,7 @@ class MapActivity : Activity(), LocationListener {
     /** Mapa girado con el rumbo del auto y el auto en la parte baja, como en un navegador. */
     private fun setNavView(nav: Boolean) {
         val mv = mapView ?: return
+        headUp = nav
         val w = root.width.takeIf { it > 0 } ?: resources.displayMetrics.widthPixels
         val h = root.height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
         if (nav) {
@@ -898,10 +933,8 @@ class MapActivity : Activity(), LocationListener {
         speedT?.text = (mySpeed * 3.6f).roundToInt().toString() + " km/h"
         streetT?.text = PlaceIndexName.cached(this, myLat, myLon)
         // girar el mapa con el rumbo
-        mapView?.let { mv ->
-            mv.model.mapViewPosition.setCenter(LatLong(myLat, myLon))
-            mv.rotation = -myBear
-        }
+        mapView?.model?.mapViewPosition?.setCenter(LatLong(myLat, myLon))
+        applyHeading()
         casing?.let { }
         if (remain < 25 && total > 60) stopNav(true)
     }
@@ -990,12 +1023,7 @@ class MapActivity : Activity(), LocationListener {
             val c = AndroidGraphicFactory.getCanvas(canvas)
             val pt = Paint(Paint.ANTI_ALIAS_FLAG)
             pt.color = (acc and 0x00FFFFFF) or 0x30000000; c.drawCircle(x, y, 34f * sc, pt)
-            c.save(); c.rotate(bearing, x, y)
-            val s = 17f * sc
-            val path = Path(); path.moveTo(x, y - s * 1.3f); path.lineTo(x + s, y + s); path.lineTo(x, y + s * 0.45f); path.lineTo(x - s, y + s); path.close()
-            pt.color = Color.WHITE; pt.style = Paint.Style.FILL_AND_STROKE; pt.strokeWidth = 5f * sc; c.drawPath(path, pt)
-            pt.color = acc; pt.style = Paint.Style.FILL; c.drawPath(path, pt)
-            c.restore()
+            CarIcon.draw(c, x, y, bearing, sc, acc)
         }
     }
 

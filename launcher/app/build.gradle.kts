@@ -16,8 +16,8 @@ android {
         applicationId = "org.opencar.launcher"
         minSdk = 26
         targetSdk = 34
-        versionCode = 57
-        versionName = "1.0.6"
+        versionCode = 58
+        versionName = "1.0.7"
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }
     packaging { resources { excludes += setOf("META-INF/DEPENDENCIES", "META-INF/LICENSE*", "META-INF/NOTICE*", "META-INF/*.kotlin_module") } }
