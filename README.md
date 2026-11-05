@@ -23,13 +23,18 @@ Funciona sin internet una vez descargado el mapa de tu región.
 
 **Mapa sin internet** (dibujado con el motor real de la app, a distintos niveles de zoom; datos © colaboradores de OpenStreetMap)
 
-| Ciudad | Avenidas | Calles |
-|---|---|---|
-| ![Mapa ciudad](docs/screenshots/mapa-ciudad.png) | ![Mapa avenidas](docs/screenshots/mapa-avenidas.png) | ![Mapa calles](docs/screenshots/mapa-calles.png) |
+<table>
+<tr><th align="center">Ciudad</th><th align="center">Avenidas</th><th align="center">Calles</th></tr>
+<tr>
+<td><img src="docs/screenshots/mapa-ciudad.png" alt="Mapa ciudad" width="330"></td>
+<td><img src="docs/screenshots/mapa-avenidas.png" alt="Mapa avenidas" width="330"></td>
+<td><img src="docs/screenshots/mapa-calles.png" alt="Mapa calles" width="330"></td>
+</tr>
+</table>
 
 Modo noche (tema propio, calles claras sobre fondo oscuro):
 
-![Mapa de noche](docs/screenshots/mapa-noche.png)
+<img src="docs/screenshots/mapa-noche.png" alt="Mapa de noche" width="700">
 
 Navegación (ruta real calculada por el enrutador de la app sobre el mapa sin internet; el auto apunta hacia donde avanzas, el mapa gira para que siempre veas hacia adelante y los nombres de calles y lugares quedan siempre derechos, las flechas blancas marcan el sentido de la ruta y las azules las calles de un solo sentido; el banner y los paneles son una maqueta):
 
