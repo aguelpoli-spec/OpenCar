@@ -47,12 +47,20 @@ object Luces {
         }.sortedBy { it.key }
 
     fun saveSignal(p: SharedPreferences, d: Diff) {
-        p.edit().putString("lights_key", d.key).putString("lights_on", d.on).putString("lights_off", d.off).apply()
+        p.edit().putString("lights_key", d.key).putString("lights_on", d.on).putString("lights_off", d.off).putBoolean("lights_invert", false).apply()
     }
 
     fun clearSignal(p: SharedPreferences) { p.edit().remove("lights_key").remove("lights_on").remove("lights_off").apply() }
 
     fun configured(p: SharedPreferences) = !p.getString("lights_key", null).isNullOrBlank()
+
+    /** El usuario dice cómo están las luces ahora mismo: si la señal dice lo contrario, se invierte sola. Devuelve true si corrigió. */
+    fun learn(ctx: Context, p: SharedPreferences, realOn: Boolean): Boolean {
+        val st = state(ctx, p) ?: return false
+        if (st == realOn) return false
+        p.edit().putBoolean("lights_invert", !p.getBoolean("lights_invert", false)).apply()
+        return true
+    }
 
     /** true = encendidas, false = apagadas, null = no hay señal configurada o no se puede leer. */
     fun state(ctx: Context, p: SharedPreferences): Boolean? {
@@ -79,6 +87,16 @@ object Luces {
         }
         return if (inv && r != null) !r else r
     }
+
+    /** Estado final de las luces: la señal de la radio si existe; si no, lo que marcaste a mano (vale 12 h). Nunca se adivina por la hora. */
+    fun effective(ctx: Context, p: SharedPreferences): Boolean? {
+        state(ctx, p)?.let { return it }
+        val t = p.getLong("lights_manual_at", 0L)
+        if (t == 0L || System.currentTimeMillis() - t > 12 * 3_600_000L) return null
+        return p.getBoolean("lights_manual", false)
+    }
+    fun hasSignal(ctx: Context, p: SharedPreferences) = state(ctx, p) != null
+    fun setManual(p: SharedPreferences, on: Boolean) { p.edit().putBoolean("lights_manual", on).putLong("lights_manual_at", System.currentTimeMillis()).apply() }
 
     fun hasLightSensor(ctx: Context): Boolean = try {
         (ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT) != null

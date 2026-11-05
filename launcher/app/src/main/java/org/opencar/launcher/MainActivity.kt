@@ -2369,7 +2369,7 @@ class MainActivity : Activity() {
         val glow = Luces.GlowView(this, { wall.imageMatrix }, { currentKey() })
         glowView = glow
         area.addView(glow, FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        glow.setOn(Luces.state(this, prefs) ?: nightFx, false)
+        glow.setOn(Luces.effective(this, prefs) ?: false, false)
         area.addView(View(this).apply {
             background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
                 intArrayOf(Color.parseColor("#A0030814"), Color.parseColor("#00030814")))
@@ -2791,7 +2791,7 @@ class MainActivity : Activity() {
 
     // ---- luces / modo noche
     private fun wLights(s: WSpec): View {
-        val st = Luces.state(this, prefs)
+        val st = Luces.effective(this, prefs)
         lightsShown = st
         val night = !th.day
         val (icon, label, col) = when {
@@ -2803,7 +2803,19 @@ class MainActivity : Activity() {
         val c = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER
             setPadding(p(12), p(4), p(12), p(4)); background = wGlass(18f); isClickable = true
-            setOnClickListener { nightSettings() }
+            // toque: dices cómo están las luces AHORA; si la señal de la radio dice lo contrario, se corrige sola; mantener pulsado = ajustes
+            setOnClickListener {
+                AlertDialog.Builder(this@MainActivity).setTitle("¿Cómo están las luces ahora?")
+                    .setItems(arrayOf("💡 Encendidas", "Apagadas", "Ajustes de luces…")) { _, w ->
+                        if (w == 2) { nightSettings(); return@setItems }
+                        val on = w == 0
+                        val fixed = Luces.learn(this@MainActivity, prefs, on)
+                        if (!Luces.hasSignal(this@MainActivity, prefs)) Luces.setManual(prefs, on)
+                        lightsShown = null; widgetLayer?.rebuild("luces"); glowView?.setOn(Luces.effective(this@MainActivity, prefs) ?: on)
+                        toast(if (fixed) "Listo: ajusté la señal de luces" else if (on) "Luces encendidas" else "Luces apagadas")
+                    }.setNegativeButton("Cancelar", null).show()
+            }
+            setOnLongClickListener { nightSettings(); true }
         }
         c.addView(txt(icon, 14f, col)); c.addView(txt(label, 12.5f, col, true).apply { setPadding(p(7), 0, 0, 0); maxLines = 1 })
         c.pressFx()
@@ -3139,10 +3151,10 @@ class MainActivity : Activity() {
         val t = SystemClock.elapsedRealtime()
         if (t - lightsAt < 4000L || page != Page.HOME) return
         lightsAt = t
-        val st = Luces.state(this, prefs)
+        val st = Luces.effective(this, prefs)
         if (st != lightsShown) { lightsShown = st; widgetLayer?.rebuild("luces") }
         val night = !th.day && prefs.getBoolean("night_photo", true)
-        glowView?.setOn(st ?: night)   // con señal de la radio, sigue las luces a cualquier hora
+        glowView?.setOn(Luces.effective(this, prefs) ?: false)   // sigue las luces reales (o lo que marcaste), nunca la hora
         if (th.day || !prefs.getBoolean("light_alert", true) || alertView != null || widgetLayer?.editing == true) return
         val moving = TripService.running && TripService.lastFixMs != 0L && System.currentTimeMillis() - TripService.lastFixMs < 8000L && TripService.speedMps * 3.6f > 6f
         if (st == true || !moving) return
@@ -3264,7 +3276,8 @@ class MainActivity : Activity() {
             if (d.isEmpty()) {
                 AlertDialog.Builder(this).setTitle("Sin cambios").setMessage("Tu radio no cambió ningún ajuste al encender las luces. No entrega ese dato: el launcher usará el atardecer (GPS) y mostrará «Anocheció, enciende las luces».").setPositiveButton("Entendido", null).show()
             } else {
-                val top = d.take(15)
+                val likely = Regex("beam|lamp|light|illum|headl|night|backlight|ill_")
+                val top = d.sortedBy { if (likely.containsMatchIn(it.key.lowercase())) 0 else 1 }.take(15)
                 AlertDialog.Builder(this).setTitle("Cambió esto: elige la señal de luces")
                     .setItems(top.map { "${it.key}\n  ${it.off.take(24)} → ${it.on.take(24)}" }.toTypedArray()) { _, i -> Luces.saveSignal(prefs, top[i]); widgetLayer?.rebuild("luces"); refresh(); toast("Señal guardada") }
                     .setNegativeButton("Cancelar", null).show()
