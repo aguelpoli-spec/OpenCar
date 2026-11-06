@@ -110,7 +110,8 @@ class MapActivity : Activity(), LocationListener {
                 val chip = sentidoChip ?: TextView(this).also { t ->
                     t.textSize = 15f; t.setTypeface(null, android.graphics.Typeface.BOLD); t.setPadding((14 * sc).toInt(), (8 * sc).toInt(), (14 * sc).toInt(), (8 * sc).toInt())
                     t.visibility = View.GONE; sentidoChip = t
-                    (mapView?.parent as? FrameLayout)?.addView(t, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.BOTTOM or Gravity.START).apply { leftMargin = (16 * sc).toInt(); bottomMargin = (16 * sc).toInt() })
+                    t.maxLines = 1; t.ellipsize = android.text.TextUtils.TruncateAt.END; t.maxWidth = (380 * sc).toInt(); t.elevation = 14f * sc
+                    root.addView(t, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.TOP or Gravity.END).apply { rightMargin = (16 * sc).toInt(); topMargin = (14 * sc).toInt() })
                 }
                 val nm = r.calle?.let { " · $it" } ?: ""
                 when (r.estado) {
@@ -120,11 +121,24 @@ class MapActivity : Activity(), LocationListener {
                     Sentido.Estado.DOBLE -> { chip.text = "⇄ Doble sentido$nm"; chip.setTextColor(0xFF1B2A3A.toInt()); chip.background = GradientDrawable().apply { cornerRadius = 22f * sc; setColor(0xE6FFFFFF.toInt()) }; chip.visibility = View.VISIBLE }
                     else -> chip.visibility = View.GONE
                 }
+                if (r.estado != sentidoLast && chip.visibility == View.VISIBLE) chip.bringToFront()
                 sentidoLast = r.estado
             }
         }.start()
     }
     private val index by lazy { PlaceIndex(this) }
+
+    // ---- guía de voz: botón para silenciarla (se recuerda entre viajes)
+    private var muteBtn: TextView? = null
+    private fun navMuted() = prefs.getBoolean("nav_mute", false)
+    private fun navSay(vararg keys: String): Boolean = if (navMuted()) false else VozClips.play(this, *keys)
+    private fun toggleMute() {
+        val m = !navMuted()
+        prefs.edit().putBoolean("nav_mute", m).apply()
+        if (m) VozClips.stop()
+        muteBtn?.text = if (m) "🔇" else "🔊"
+        toast(if (m) "Guía de voz silenciada" else "Guía de voz activada")
+    }
 
     // capas
     private var casing: Polyline? = null
@@ -266,6 +280,8 @@ class MapActivity : Activity(), LocationListener {
         fabCol = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         fabCol!!.addView(circleBtn("+") { mapView?.model?.mapViewPosition?.zoomIn() })
         fabCol!!.addView(circleBtn("−") { mapView?.model?.mapViewPosition?.zoomOut() })
+        muteBtn = circleBtn(if (navMuted()) "🔇" else "🔊", 46) { toggleMute() }
+        fabCol!!.addView(muteBtn)
         fabCol!!.addView(circleBtn("◎", 46, acc) { follow = true; centerOnMe(true); applyHeading() })
         root.addView(fabCol, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.END or Gravity.TOP).apply { rightMargin = p(16); topMargin = p(70) })
 
@@ -606,12 +622,12 @@ class MapActivity : Activity(), LocationListener {
         if (q.trim().length < 2) { showResults(emptyList(), "Escribe una calle, avenida o lugar"); return }
         val (la, lo) = refPoint()
         Thread {
-            val local = try { index.search(q, la, lo) } catch (e: Exception) { emptyList() }
+            val local = try { rank(index.search(q, la, lo), q) } catch (e: Exception) { emptyList() }
             ui.post { showResults(local, if (local.isEmpty()) (if (isOnline()) "Sin resultados guardados. Toca Enter para buscar en internet." else "Sin resultados en la zona guardada.") else null, q) }
             if (online || local.isEmpty() && q.trim().length >= 4) {
                 if (isOnline() && online) {
                     val on = nominatim(q)
-                    ui.post { showResults(local + on.filter { o -> local.none { it.name == o.name } }, if (local.isEmpty() && on.isEmpty()) "No encontré «$q»" else null, q) }
+                    ui.post { showResults(rank(local + on.filter { o -> local.none { it.name == o.name } }, q), if (local.isEmpty() && on.isEmpty()) "No encontré «$q»" else null, q) }
                 }
             }
         }.start()
@@ -630,14 +646,31 @@ class MapActivity : Activity(), LocationListener {
         (0 until arr.length()).map { arr.getJSONObject(it) }.map { Place(it.optString("name").ifEmpty { it.optString("display_name").substringBefore(",") }, "Internet · " + it.optString("display_name").split(",").drop(1).take(2).joinToString(",").trim(), it.getDouble("lat"), it.getDouble("lon")) }
     } catch (e: Exception) { emptyList() }
 
+    /** Metros desde mi posición (GPS) hasta un lugar; si aún no hay GPS, desde el centro del mapa. */
+    private fun distTo(la: Double, lo: Double): Double {
+        val (a, b) = refPoint(); val r = FloatArray(1)
+        android.location.Location.distanceBetween(a, b, la, lo, r)
+        return r[0].toDouble()
+    }
+
+    /** Nombre exacto primero; el resto, del más cerca al más lejos. */
+    private fun rank(list: List<Place>, q: String): List<Place> {
+        val n = PlaceIndex.norm(q)
+        return list.sortedBy { distTo(it.lat, it.lon) - (if (PlaceIndex.norm(it.name) == n) 1_000_000.0 else 0.0) }
+    }
+
     private fun showResults(list: List<Place>, msg: String?, q: String = "") {
         val box = resultsBox ?: return
         box.removeAllViews()
         if (msg != null) box.addView(tx(msg, 13f, fg2).apply { setPadding(p(8), p(12), p(8), p(8)) })
         for (pl in list) {
-            val r = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(p(12), p(10), p(12), p(10)); isClickable = true; setOnClickListener { closeSearch(); routeTo(pl.name, pl.lat, pl.lon, false) } }
-            r.addView(tx(pl.name, 16f, fg, true).apply { maxLines = 1 })
-            r.addView(tx(pl.sub, 12f, fg2).apply { maxLines = 1 })
+            val r = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(p(12), p(10), p(12), p(10)); isClickable = true; setOnClickListener { closeSearch(); routeTo(pl.name, pl.lat, pl.lon, false) } }
+            val colL = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            colL.addView(tx(pl.name, 16f, fg, true).apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END })
+            colL.addView(tx(pl.sub, 12f, fg2).apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END })
+            r.addView(colL, LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f))
+            // distancia desde donde estás (GPS) para saber si queda cerca o lejos
+            if (!myLat.isNaN()) r.addView(tx(fmtKm(distTo(pl.lat, pl.lon)), 14f, acc, true).apply { setPadding(p(10), 0, 0, 0); maxLines = 1 })
             box.addView(r)
             box.addView(View(this).apply { setBackgroundColor(line) }, LinearLayout.LayoutParams(MATCH_PARENT, 1))
         }
@@ -730,7 +763,7 @@ class MapActivity : Activity(), LocationListener {
         val (fa, fo) = refPoint()
         destName = name; destLat = lat; destLon = lon
         info("Calculando la ruta…")
-        if (autoStart) VozClips.play(this, if (fuelGo) "fuel_go" else "nav_calc")
+        if (autoStart) navSay(if (fuelGo) "fuel_go" else "nav_calc")
         fuelGo = false
         Thread {
             val r = OpenCarRouter.route(MapData.segDir(this), MapData.profile(this).absolutePath, fa, fo, lat, lon, 60000L)
@@ -825,7 +858,7 @@ class MapActivity : Activity(), LocationListener {
         setNavView(true)
         val mv = mapView
         mv?.model?.mapViewPosition?.zoomLevel = 17
-        VozClips.play(this, "nav_start")
+        navSay("nav_start")
         navTick()
     }
 
@@ -833,7 +866,7 @@ class MapActivity : Activity(), LocationListener {
         navigating = false
         navWrap?.visibility = View.GONE; navBottom?.visibility = View.GONE; speedBox?.visibility = View.GONE
         clearRoute()
-        if (arrived) VozClips.play(this, "arrived")
+        if (arrived) navSay("arrived")
     }
 
     /** Mapa girado con el rumbo del auto y el auto en la parte baja, como en un navegador. */
@@ -903,7 +936,7 @@ class MapActivity : Activity(), LocationListener {
             if (d < bd) { bd = d; best = i; along = r.cum[i] + t * (r.cum[i + 1] - r.cum[i]) }
         }
         if (bd < 60) { lastIdx = best; offCount = 0 } else offCount++
-        if (offCount >= 3 && !rerouting) { rerouting = true; VozClips.play(this, "recalc"); offCount = 0
+        if (offCount >= 3 && !rerouting) { rerouting = true; navSay("recalc"); offCount = 0
             val dn = destName; val dl = destLat; val dlo = destLon
             Thread {
                 val rr = OpenCarRouter.route(MapData.segDir(this), MapData.profile(this).absolutePath, myLat, myLon, dl, dlo, 60000L)
@@ -948,8 +981,8 @@ class MapActivity : Activity(), LocationListener {
         val id = h.idx
         // el primer aviso con distancia solo si el giro queda lejos del anterior
         val levels = listOf(500 to "dist_500", 200 to "dist_200")
-        for ((m, dc) in levels) if (d <= m && d > m - 120 && spoken.add("$id:$m")) { VozClips.play(this, dc, clip); return }
-        if (d <= 45 && spoken.add("$id:now")) VozClips.play(this, clip)
+        for ((m, dc) in levels) if (d <= m && d > m - 120 && spoken.add("$id:$m")) { navSay(dc, clip); return }
+        if (d <= 45 && spoken.add("$id:now")) navSay(clip)
     }
 
     // ------------------------------------------------------------------ utilidades

@@ -153,7 +153,7 @@ class PlaceIndex(private val ctx: Context) : SQLiteOpenHelper(ctx, "places.db", 
         return all.sortedBy { hypot((it.lat - lat) * k, (it.lon - lon) * kx) }.take(limit)
     }
 
-    fun search(q: String, lat: Double, lon: Double, limit: Int = 12): List<Place> {
+    fun search(q: String, lat: Double, lon: Double, limit: Int = 15): List<Place> {
         val toks = norm(q).split(" ").filter { it.isNotEmpty() }
         if (toks.isEmpty()) return emptyList()
         val where = toks.joinToString(" AND ") { "norm LIKE ?" }
@@ -162,13 +162,13 @@ class PlaceIndex(private val ctx: Context) : SQLiteOpenHelper(ctx, "places.db", 
         val seen = HashSet<String>()
         val k = 111320.0; val kx = k * cos(Math.toRadians(lat))
         val all = ArrayList<Pair<Double, Place>>()
-        readableDatabase.rawQuery("SELECT name, sub, lat, lon, norm FROM p WHERE $where LIMIT 400", args).use { c ->
+        readableDatabase.rawQuery("SELECT name, sub, lat, lon, norm FROM p WHERE $where LIMIT 4000", args).use { c ->
             while (c.moveToNext()) {
                 val pl = Place(c.getString(0), c.getString(1), c.getDouble(2), c.getDouble(3))
                 val nm = c.getString(4)
                 var score = hypot((pl.lat - lat) * k, (pl.lon - lon) * kx)
-                if (nm == toks.joinToString(" ")) score -= 8000.0
-                else if (nm.startsWith(toks[0])) score -= 2500.0
+                // nombre exacto primero (el más cercano entre los exactos); todo lo demás, del más cerca al más lejos
+                if (nm == toks.joinToString(" ")) score -= 1_000_000.0
                 all.add(Pair(score, pl))
             }
         }

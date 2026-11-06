@@ -37,6 +37,7 @@ object BgWatch {
 
     fun onFix(ctx: Context, p: SharedPreferences, lat: Double, lon: Double, kmh: Float) {
         val now = System.currentTimeMillis()
+        try { Parking.noteFix(ctx, p, lat, lon, kmh) } catch (e: Throwable) { }
         // ---- dónde estacioné
         if (kmh > 12f) {
             lastMoveAt = now
@@ -47,6 +48,10 @@ object BgWatch {
             if (st == 0L && lastMove > 0L) {
                 st = now
                 p.edit().putLong("stop_t", st).putString("stop_lat", String.format(Locale.US, "%.6f", lat)).putString("stop_lon", String.format(Locale.US, "%.6f", lon)).apply()
+            }
+            if (st != 0L && now - st > Parking.STOP_LOG_MS && p.getLong("stop_logged", 0L) != st) {
+                val la0 = p.getString("stop_lat", null)?.toDoubleOrNull(); val lo0 = p.getString("stop_lon", null)?.toDoubleOrNull()
+                if (la0 != null && lo0 != null) { Parking.add(ctx, p, st, la0, lo0, "parada", ((now - st) / 60_000L).toInt()); p.edit().putLong("stop_logged", st).apply() }
             }
             if (st != 0L && now - st > PARK_AFTER_MS && lastMove > p.getLong("park_t", 0L)) {
                 val la = p.getString("stop_lat", null)?.toDoubleOrNull(); val lo = p.getString("stop_lon", null)?.toDoubleOrNull()
@@ -68,12 +73,7 @@ object BgWatch {
     }
 
     fun saveParking(ctx: Context, p: SharedPreferences, la: Double, lo: Double) {
-        p.edit().putString("park_lat", String.format(Locale.US, "%.6f", la)).putString("park_lon", String.format(Locale.US, "%.6f", lo))
-            .putLong("park_t", System.currentTimeMillis()).remove("park_name").apply()
-        Thread {
-            val nm = try { PlaceIndex.nameAt(ctx, la, lo) } catch (e: Throwable) { "" }
-            if (nm.isNotBlank()) p.edit().putString("park_name", nm).apply()
-        }.start()
+        Parking.add(ctx, p, p.getLong("stop_t", System.currentTimeMillis()), la, lo, "estacionado", (PARK_AFTER_MS / 60_000L).toInt())
     }
 }
 

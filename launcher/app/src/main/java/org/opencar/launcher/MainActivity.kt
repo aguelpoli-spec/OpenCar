@@ -2830,8 +2830,8 @@ class MainActivity : Activity() {
     }
 
     private fun wPark(s: WSpec): View {
-        val lat = prefs.getString("park_lat", null)?.toDoubleOrNull(); val lon = prefs.getString("park_lon", null)?.toDoubleOrNull()
-        val t = prefs.getLong("park_t", 0L)
+        Parking.listener = { handler.post { widgetLayer?.rebuild("park") } }
+        val e = Parking.lastParked(prefs)
         val c = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
             setPadding(p(12), p(4), p(10), p(4)); background = wGlass(20f); isClickable = true
@@ -2839,41 +2839,60 @@ class MainActivity : Activity() {
         }
         c.addView(ImageView(this).apply { setImageResource(R.drawable.ic_place); setColorFilter(Color.parseColor("#FFB347")) }, LinearLayout.LayoutParams(p(24), p(24)).apply { rightMargin = p(8) })
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        col.addView(wTitle("Dónde estacioné"))
-        col.addView(txt(if (lat != null && lon != null) (prefs.getString("park_name", null)?.takeIf { it.isNotBlank() } ?: "Mi auto") + " · " + parkAgo(t) else "Aún sin ubicación guardada", 13.5f, th.fg, true).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END })
+        col.addView(wTitle(if (e != null) "Dónde estacioné · " + parkAgo(e.t) else "Dónde estacioné"))
+        col.addView(txt(if (e != null) Parking.display(e) else "Aún sin ubicación guardada", 13f, th.fg, true).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END })
         c.addView(col, LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f))
-        if (lat != null && lon != null) c.addView(txt("Ir ▸", 13f, Color.parseColor("#021018"), true).apply {
+        if (e != null) c.addView(txt("Ir ▸", 13f, Color.parseColor("#021018"), true).apply {
             gravity = Gravity.CENTER; setPadding(p(14), p(6), p(14), p(6)); background = GradientDrawable().apply { cornerRadius = p(14).toFloat(); setColor(cyan) }
             isClickable = true
-            setOnClickListener { startActivity(Intent(this@MainActivity, MapActivity::class.java).putExtra("dest_q", String.format(Locale.US, "%.6f,%.6f", lat, lon)).putExtra("dest_name", "Mi auto")) }
+            setOnClickListener { goPark(e) }
         })
         return c
     }
 
+    private fun goPark(e: Parking.Entry) {
+        startActivity(Intent(this, MapActivity::class.java).putExtra("dest_q", String.format(Locale.US, "%.6f,%.6f", e.lat, e.lon)).putExtra("dest_name", e.label.ifBlank { "Mi auto" }))
+    }
+
+    private fun parkDur(m: Int) = if (m < 60) "$m min" else if (m < 1440) "${m / 60} h" + (if (m % 60 >= 5) " ${m % 60} min" else "") else "${m / 1440} d"
+
+    /** Historial de lugares: cada estacionamiento y parada, con nombre (Casa, Trabajo…) y calle. */
     private fun parkDialog() {
-        val has = prefs.getString("park_lat", null) != null
-        val items = arrayListOf("Guardar mi ubicación actual")
-        if (has) items.add("Borrar la ubicación guardada")
-        AlertDialog.Builder(this).setTitle("Dónde estacioné")
+        val l = Parking.list(prefs).take(25)
+        val items = ArrayList<String>()
+        items.add("📍 Guardar mi ubicación actual")
+        for (e in l) items.add(Parking.display(e) + "\n" + Parking.kindText(e) + " · " + parkAgo(e.t) + (if (e.durMin >= 2) " · " + parkDur(e.durMin) else ""))
+        if (l.isNotEmpty()) items.add("🗑 Borrar todo el historial")
+        AlertDialog.Builder(this).setTitle("Dónde estacioné (historial)")
             .setItems(items.toTypedArray()) { _, w ->
-                if (w == 0) saveParking(true) else { prefs.edit().remove("park_lat").remove("park_lon").remove("park_t").remove("park_name").apply(); widgetLayer?.rebuild("park") }
+                when {
+                    w == 0 -> saveParking(true)
+                    w <= l.size -> parkEntryDialog(l[w - 1])
+                    else -> AlertDialog.Builder(this).setTitle("¿Borrar todo el historial?").setPositiveButton("Borrar") { _, _ -> Parking.clear(prefs); widgetLayer?.rebuild("park") }.setNegativeButton("Cancelar", null).show()
+                }
+            }.setNegativeButton("Cerrar", null).show()
+    }
+
+    private fun parkEntryDialog(e: Parking.Entry) {
+        AlertDialog.Builder(this).setTitle(Parking.display(e))
+            .setItems(arrayOf("Ir hasta aquí", "Ponerle nombre (Casa, Trabajo…)", "Quitar del historial")) { _, w ->
+                when (w) {
+                    0 -> goPark(e)
+                    1 -> {
+                        val et = EditText(this).apply { setText(e.label); setSingleLine() }
+                        AlertDialog.Builder(this).setTitle("Nombre del lugar").setView(et)
+                            .setPositiveButton("Guardar") { _, _ -> Parking.rename(prefs, e.t, e.lat, et.text.toString().trim()); widgetLayer?.rebuild("park") }
+                            .setNegativeButton("Cancelar", null).show()
+                    }
+                    else -> { Parking.remove(prefs, e.t, e.lat); widgetLayer?.rebuild("park") }
+                }
             }.setNegativeButton("Cerrar", null).show()
     }
 
     private fun saveParking(manual: Boolean) {
         val la = TripService.lat; val lo = TripService.lon
         if (la.isNaN() || lo.isNaN()) { if (manual) toast("Todavía no hay señal de GPS"); return }
-        saveParkingAt(la, lo, manual)
-    }
-
-    private fun saveParkingAt(la: Double, lo: Double, manual: Boolean) {
-        prefs.edit().putString("park_lat", String.format(Locale.US, "%.6f", la)).putString("park_lon", String.format(Locale.US, "%.6f", lo))
-            .putLong("park_t", System.currentTimeMillis()).remove("park_name").apply()
-        widgetLayer?.rebuild("park")
-        Thread {
-            val nm = try { PlaceIndex.nameAt(this, la, lo) } catch (e: Throwable) { "" }
-            if (nm.isNotBlank()) handler.post { prefs.edit().putString("park_name", nm).apply(); widgetLayer?.rebuild("park") }
-        }.start()
+        Parking.add(this, prefs, System.currentTimeMillis(), la, lo, "manual", 0)
         if (manual) toast("Ubicación guardada")
     }
 
