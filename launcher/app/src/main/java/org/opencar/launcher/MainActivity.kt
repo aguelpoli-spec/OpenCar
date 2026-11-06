@@ -647,6 +647,7 @@ class MainActivity : Activity() {
             }
             if (Build.VERSION.SDK_INT >= 33) registerReceiver(legacyRx, f, Context.RECEIVER_EXPORTED) else registerReceiver(legacyRx, f)
         } catch (e: Exception) { }
+        try { registerReceiver(btRx, IntentFilter(android.bluetooth.BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) } catch (e: Throwable) { }
         npT = 0L
         lastPlaying = nowPlaying()?.playing == true   // solo abre el reproductor si empieza a sonar con el launcher abierto
         val fresh = page == Page.HOME && renderedPage == Page.HOME && wallView != null && nowR - lastRenderAt < 15_000L && isDay() == renderedDay
@@ -659,6 +660,7 @@ class MainActivity : Activity() {
             val t = System.currentTimeMillis()
             if (t - prefs.getLong("cal_net_at", 0L) > 7 * 86_400_000L && t - prefs.getLong("cal_net_try", 0L) > 6 * 3_600_000L) syncHolidaysOnline(false)
         }, 6000)
+        handler.postDelayed({ if (page == Page.HOME && isOnlineNow()) checkUpdate(false) }, 20_000)
         if (!prefs.getBoolean("setup_done", false)) {
             handler.post { startSetup() }
         } else if (!prefs.getBoolean("perm_asked", false) && (!hasLocationPerm() || !hasListenerAccess())) {
@@ -673,6 +675,7 @@ class MainActivity : Activity() {
         stopLight()
         watchLights(false)
         try { unregisterReceiver(legacyRx) } catch (e: Exception) { }
+        try { unregisterReceiver(btRx) } catch (e: Exception) { }
     }
 
     private var pendingVoice: String? = null
@@ -2676,7 +2679,14 @@ class MainActivity : Activity() {
         "cal" -> { val n = nextHolidayText(); wInfo("Próximo feriado", n ?: "—", th.fg) { openCalendar() } }
         "asist" -> wInfo("Asistente", "Hey ${wakeName()}", cyan) { assistantDialog() }
         "estado" -> { val (c, w) = attention(); wInfo("Estado del auto", if (c == 0) "Todo bien" else "$c avisos", if (c == 0) green else if (w == 2) red else amber) { setPanel(true) } }
+        "sol" -> wSun(s)
         else -> View(this)
+    }
+
+    private fun wSun(s: WSpec): View {
+        val c = FrameLayout(this).apply { background = wGlass(16f); isClickable = true; setOnClickListener { nightSettings() } }
+        c.addView(SunView(this, p(1).toFloat(), th.fg, th.fgSoft, { sunTimes(Calendar.getInstance()) }), FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+        return c
     }
 
     private fun nextHolidayText(): String? = try {
@@ -5069,6 +5079,8 @@ class MainActivity : Activity() {
             if (sessions.isEmpty()) "ninguna" else sessions.joinToString(", ") { it.packageName }, null)
         row("App de CarPlay", findApp("carplay_pkg", carPlayHints)?.let { "${it.label} (${it.pkg})" } ?: "no detectada", findApp("carplay_pkg", carPlayHints) != null)
         row("App de radio", findApp("radio_pkg", radioHints)?.let { "${it.label} (${it.pkg})" } ?: "no detectada", findApp("radio_pkg", radioHints) != null)
+        box.addView(TextView(this).apply { text = "Acerca de este equipo"; size(16f); setTextColor(accent); typeface = Typeface.DEFAULT_BOLD; setPadding(0, p(14), 0, p(2)) })
+        for ((k, v) in aboutRows()) row(k, v, null)
 
         val buttons = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         buttons.addView(tile("Dar permiso de ubicación", null, 0f, 16f, { requestPerms(false) }), weight(1f, p(80), 6f))
@@ -5135,9 +5147,102 @@ class MainActivity : Activity() {
         while (buttons4.childCount > 6) { val v = buttons4.getChildAt(6); buttons4.removeViewAt(6); buttons5.addView(v) }
         box.addView(buttons4, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
         box.addView(buttons5, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+        val buttons6 = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        buttons6.addView(tile("Copiar datos del equipo", null, 0f, 15f, { copyAbout() }), weight(1f, p(80), 6f))
+        buttons6.addView(tile("Audio Bluetooth automático: ${if (prefs.getBoolean("bt_auto", false)) "sí" else "no"}", null, 0f, 15f, { toggleBtAuto() }), weight(1f, p(80), 6f))
+        buttons6.addView(tile("Buscar actualización", null, 0f, 15f, { checkUpdate(true) }), weight(1f, p(80), 6f))
+        box.addView(buttons6, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
 
         col.addView(sv, LinearLayout.LayoutParams(MATCH_PARENT, 0, 1f))
         return col
+    }
+
+
+    // ---- Acerca de este equipo (datos para reportar problemas)
+    private fun aboutRows(): List<Pair<String, String>> {
+        val dm = resources.displayMetrics
+        val pi = try { packageManager.getPackageInfo(packageName, 0) } catch (e: Throwable) { null }
+        @Suppress("DEPRECATION") val code = pi?.versionCode ?: 0
+        val ram = try { val mi = android.app.ActivityManager.MemoryInfo(); (getSystemService(ACTIVITY_SERVICE) as android.app.ActivityManager).getMemoryInfo(mi); String.format(Locale.US, "%.1f GB", mi.totalMem / 1073741824.0).replace('.', ',') } catch (e: Throwable) { "?" }
+        return listOf(
+            "App" to "${pi?.versionName ?: "?"} (código $code)",
+            "Android" to "${Build.VERSION.RELEASE} · API ${Build.VERSION.SDK_INT}",
+            "Equipo" to "${Build.MANUFACTURER} ${Build.MODEL}",
+            "Placa · procesador" to "${Build.BOARD} · ${Build.HARDWARE} · ${Build.SUPPORTED_ABIS.firstOrNull() ?: "?"}",
+            "Pantalla" to "${dm.widthPixels}×${dm.heightPixels} · ${dm.densityDpi} dpi",
+            "Memoria RAM" to ram,
+            "Compilación" to Build.DISPLAY)
+    }
+
+    private fun copyAbout() {
+        val t = aboutRows().joinToString("\n") { it.first + ": " + it.second }
+        try { (getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager).setPrimaryClip(android.content.ClipData.newPlainText("Datos del equipo", t)); toast("Datos copiados: pégalos en tu reporte") }
+        catch (e: Throwable) { toast("No pude copiar") }
+    }
+
+    // ---- audio Bluetooth automático: si el celular empieza a reproducir y el launcher está en el inicio, abre la app de música Bluetooth de la radio
+    private val btRx = object : BroadcastReceiver() {
+        override fun onReceive(c: Context?, i: Intent?) {
+            try {
+                if (i?.action != android.bluetooth.BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED || !prefs.getBoolean("bt_auto", false)) return
+                val st = i.getIntExtra(android.bluetooth.BluetoothProfile.EXTRA_STATE, -1)
+                val pv = i.getIntExtra(android.bluetooth.BluetoothProfile.EXTRA_PREVIOUS_STATE, -1)
+                if (st == android.bluetooth.BluetoothA2dp.STATE_PLAYING && pv != st) handler.post { onPhonePlaying() }
+            } catch (e: Throwable) { }
+        }
+    }
+
+    private fun btMusicApp(): AppInfo? {
+        ps("bt_pkg")?.let { saved -> apps.firstOrNull { it.pkg == saved }?.let { return it } }
+        val bt = apps.filter { it.pkg != packageName && kindOf(it.pkg) == "bt" }
+        return bt.firstOrNull { a -> listOf("music", "musica", "audio", "media", "a2dp").any { a.pkg.contains(it, true) || a.label.contains(it, true) } }
+    }
+
+    private fun onPhonePlaying() {
+        if (page != Page.HOME || isFinishing) return
+        val a = btMusicApp()
+        toast("El celular está reproduciendo" + (if (a != null) " · abriendo ${a.label}" else ""))
+        if (a != null) launch(a.pkg)
+    }
+
+    private fun toggleBtAuto() {
+        val on = !prefs.getBoolean("bt_auto", false)
+        prefs.edit().putBoolean("bt_auto", on).apply()
+        if (on && Build.VERSION.SDK_INT >= 31 && checkSelfPermission("android.permission.BLUETOOTH_CONNECT") != PackageManager.PERMISSION_GRANTED)
+            try { requestPermissions(arrayOf("android.permission.BLUETOOTH_CONNECT"), 77) } catch (e: Throwable) { }
+        toast(if (on) "Audio Bluetooth automático activado (depende de tu radio)" else "Audio Bluetooth automático desactivado")
+        render()
+    }
+
+    // ---- aviso de versión nueva (GitHub)
+    private fun checkUpdate(manual: Boolean) {
+        if (!Update.due(prefs, manual)) return
+        if (manual) toast("Buscando actualización…")
+        Thread {
+            val info = Update.fetch()
+            if (info != null) prefs.edit().putLong("upd_at", System.currentTimeMillis()).apply()
+            val cur = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "" } catch (e: Throwable) { "" }
+            handler.post {
+                if (isFinishing || isDestroyed) return@post
+                when {
+                    info == null -> if (manual) toast("No pude consultar GitHub. ¿Hay internet?")
+                    Update.newer(info.version, cur) -> if (manual || (page == Page.HOME && prefs.getString("upd_skip", "") != info.version)) showUpdate(info)
+                    manual -> toast("Ya tienes la última versión ($cur)")
+                }
+            }
+        }.start()
+    }
+
+    private fun showUpdate(info: Update.Info) {
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(p(20), p(8), p(20), p(4)) }
+        box.addView(TextView(this).apply { text = info.notes.ifBlank { "Hay una versión nueva de OpenCar." }; textSize = 14f })
+        box.addView(ImageView(this).apply { setImageBitmap(Qr.bitmap(Update.PAGE, p(240))); setBackgroundColor(Color.WHITE) },
+            LinearLayout.LayoutParams(p(240), p(240)).apply { topMargin = p(12); gravity = Gravity.CENTER_HORIZONTAL })
+        box.addView(TextView(this).apply { text = "Escanéalo con tu celular para descargarla ahí y pasarla por USB, o toca «Abrir descarga»."; textSize = 12f; alpha = 0.7f; gravity = Gravity.CENTER; setPadding(0, p(8), 0, 0) })
+        AlertDialog.Builder(this).setTitle("Versión ${info.version} disponible").setView(ScrollView(this).apply { addView(box) })
+            .setPositiveButton("Abrir descarga") { _, _ -> try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Update.PAGE))) } catch (e: Throwable) { toast("No hay navegador: usa el QR") } }
+            .setNeutralButton("Omitir esta versión") { _, _ -> prefs.edit().putString("upd_skip", info.version).apply() }
+            .setNegativeButton("Más tarde", null).show()
     }
 
     // ---- volumen y play del inicio

@@ -55,7 +55,8 @@ object WStore {
         Def("gas", "Gasolina", "Último rendimiento y registro", 20f, 316f, 190f, 60f, 130f, 50f, false),
         Def("cal", "Calendario", "Próximo feriado", 20f, 316f, 190f, 60f, 130f, 50f, false),
         Def("asist", "Asistente", "Hey auto", 20f, 316f, 150f, 60f, 100f, 50f, false),
-        Def("estado", "Estado del auto", "Avisos de mantenimiento", 20f, 316f, 190f, 60f, 130f, 50f, false)
+        Def("estado", "Estado del auto", "Avisos de mantenimiento", 20f, 316f, 190f, 60f, 130f, 50f, false),
+        Def("sol", "Amanecer y atardecer", "Curva del sol y cuánto falta para que anochezca", 20f, 316f, 224f, 100f, 160f, 76f, false)
     )
 
     fun def(id: String): Def? = defs.firstOrNull { it.id == id }
