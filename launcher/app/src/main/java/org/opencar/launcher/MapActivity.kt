@@ -183,6 +183,9 @@ class MapActivity : Activity(), LocationListener {
     private var headUp = false
     private var mySpeed = 0f
     private var follow = true
+    private var offCenter = false; private var touchAt = 0L; private var zoomHold = 0L; private var lastAutoZoom = 0L
+    private var centerBtn: TextView? = null
+    private var autoLoop: Runnable? = null
     private var navigating = false
     private var route: OpenCarRouter.Result? = null
     private var destName = ""
@@ -278,12 +281,17 @@ class MapActivity : Activity(), LocationListener {
 
         // botones laterales
         fabCol = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        fabCol!!.addView(circleBtn("+") { mapView?.model?.mapViewPosition?.zoomIn() })
-        fabCol!!.addView(circleBtn("−") { mapView?.model?.mapViewPosition?.zoomOut() })
+        fabCol!!.addView(circleBtn("+") { zoomHold = nowMs() + 20000; mapView?.model?.mapViewPosition?.zoomIn() })
+        fabCol!!.addView(circleBtn("−") { zoomHold = nowMs() + 20000; mapView?.model?.mapViewPosition?.zoomOut() })
         muteBtn = circleBtn(if (navMuted()) "🔇" else "🔊", 46) { toggleMute() }
         fabCol!!.addView(muteBtn)
-        fabCol!!.addView(circleBtn("◎", 46, acc) { follow = true; centerOnMe(true); applyHeading() })
+        fabCol!!.addView(circleBtn("◎", 46, acc) { recenter() })
         root.addView(fabCol, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.END or Gravity.TOP).apply { rightMargin = p(16); topMargin = p(70) })
+
+        centerBtn = tx("◎  Centrar", 16f, Color.parseColor("#021018"), true).apply {
+            background = bg(acc, 24); setPadding(p(20), p(12), p(20), p(12)); visibility = View.GONE; setOnClickListener { recenter() }
+        }
+        root.addView(centerBtn, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.END or Gravity.BOTTOM).apply { rightMargin = p(16); bottomMargin = p(100) })
 
         infoToast = tx("", 13f).apply { background = bg(glass, 18, line); setPadding(p(14), p(7), p(14), p(7)); visibility = View.GONE }
         root.addView(infoToast, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.BOTTOM or Gravity.START).apply { leftMargin = p(16); bottomMargin = p(16) })
@@ -376,8 +384,8 @@ class MapActivity : Activity(), LocationListener {
         val lo = prefs.getString("map_lon", null)?.toDoubleOrNull() ?: CENTER.longitude
         mv.model.mapViewPosition.mapPosition = MapPosition(LatLong(la, lo), 15)
         mv.addInputListener(object : org.mapsforge.map.view.InputListener {
-            override fun onMoveEvent() { if (!navigating) follow = false }
-            override fun onZoomEvent() {}
+            override fun onMoveEvent() { follow = false; setOff(true) }
+            override fun onZoomEvent() { zoomHold = nowMs() + 20000 }
         })
         mv.layerManager.layers.add(object : Layer() {
             override fun draw(bb: BoundingBox, z: Byte, c: org.mapsforge.core.graphics.Canvas, tlp: Point) {}
@@ -386,6 +394,7 @@ class MapActivity : Activity(), LocationListener {
         applyNight(mv)
         startLocation()
         ensureIndex()
+        startAutoLoop()
     }
 
     private fun applyNight(mv: MapView) { mv.setLayerType(View.LAYER_TYPE_NONE, null) }
@@ -463,6 +472,54 @@ class MapActivity : Activity(), LocationListener {
         val on = navigating || follow
         if (on != headUp) setNavView(on)
         mapView?.let { mv -> if (headUp) { mv.rotation = -bearSm; mv.layerManager.redrawLayers() } }
+    }
+
+    private fun nowMs() = android.os.SystemClock.elapsedRealtime()
+
+    /** Muestra el botón «Centrar» cuando el mapa no está centrado en tu posición / tu ruta. */
+    private fun setOff(v: Boolean) { offCenter = v; if (v) touchAt = nowMs(); centerBtn?.visibility = if (v) View.VISIBLE else View.GONE }
+
+    /** Vuelve a centrar: con ruta sin iniciar encuadra tú + destino; navegando te sigue; sin ruta te centra. */
+    private fun recenter() {
+        setOff(false); follow = true
+        val r = route
+        if (r != null && !navigating) fitRoute(r) else { centerOnMe(true); applyHeading() }
+        if (navigating) navTick()
+    }
+
+    private fun fitRoute(r: OpenCarRouter.Result) {
+        val mv = mapView ?: return
+        var la0 = r.lats.min(); var la1 = r.lats.max(); var lo0 = r.lons.min(); var lo1 = r.lons.max()
+        if (!myLat.isNaN()) { la0 = min(la0, myLat); la1 = max(la1, myLat); lo0 = min(lo0, myLon); lo1 = max(lo1, myLon) }
+        val bb = BoundingBox(la0, lo0, la1, lo1)
+        val dim = Dimension(max(100, mv.width), max(100, (mv.height * 0.7f).toInt()))
+        val z = min(17, LatLongUtils.zoomForBounds(dim, bb.extendMeters(150), mv.model.displayModel.tileSize).toInt()).toByte()
+        mv.model.mapViewPosition.mapPosition = MapPosition(bb.centerPoint, z)
+    }
+
+    /** Si tocaste el mapa y lo dejas ~12 s, vuelve solo a centrarse (navegando o con ruta). */
+    private fun startAutoLoop() {
+        if (autoLoop != null) return
+        autoLoop = object : Runnable {
+            override fun run() {
+                if (offCenter && nowMs() - touchAt > 12000 && (navigating || route != null)) recenter()
+                ui.postDelayed(this, 2000)
+            }
+        }.also { ui.postDelayed(it, 2000) }
+    }
+
+    /** Navegando: ajusta el zoom para ver el auto y lo que viene (giro próximo y velocidad). */
+    private fun autoZoom(dNext: Double) {
+        val mv = mapView ?: return
+        val now = nowMs()
+        if (now < zoomHold || now - lastAutoZoom < 5000) return
+        val h = (root.height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels).toDouble()
+        val base = (mySpeed * 10.0).coerceIn(150.0, 600.0)
+        val ahead = if (dNext < base) max(dNext * 1.4, 150.0) else base
+        val mpp = ahead / (h * 0.5)
+        val zf = Math.log(40075016.686 * cos(Math.toRadians(myLat)) / (mv.model.displayModel.tileSize * mpp)) / Math.log(2.0)
+        val z = Math.floor(zf).toInt().coerceIn(15, 17)
+        if (z != mv.model.mapViewPosition.zoomLevel.toInt()) { mv.model.mapViewPosition.zoomLevel = z.toByte(); lastAutoZoom = now }
     }
 
     private fun centerOnMe(zoom: Boolean) {
@@ -786,11 +843,8 @@ class MapActivity : Activity(), LocationListener {
         val mv = mapView ?: return
         mv.layerManager.redrawLayers()
         if (!navigating) {
-            val bb = BoundingBox(r.lats.min(), r.lons.min(), r.lats.max(), r.lons.max())
-            val dim = Dimension(max(100, mv.width), max(100, (mv.height * 0.7f).toInt()))
-            val z = min(17, LatLongUtils.zoomForBounds(dim, bb.extendMeters(150), mv.model.displayModel.tileSize).toInt()).toByte()
-            mv.model.mapViewPosition.mapPosition = MapPosition(bb.centerPoint, z)
-            follow = false
+            fitRoute(r)
+            follow = false; setOff(false)
             previewT?.text = destName
             previewS?.text = "${fmtKm(r.distance.toDouble())} · ${max(1, r.seconds / 60)} min · llegas ${etaClock(r.seconds)} · sin tráfico en vivo"
             previewCard?.visibility = View.VISIBLE; topUi?.visibility = View.GONE
@@ -799,7 +853,7 @@ class MapActivity : Activity(), LocationListener {
     }
 
     private fun clearRoute() {
-        route = null; navigating = false
+        route = null; navigating = false; setOff(false); follow = true
         casing?.setPoints(emptyList()); routeLine?.setPoints(emptyList()); rutaFlechas?.set(null, null); destLayer?.set(Double.NaN, Double.NaN)
         previewCard?.visibility = View.GONE; navBanner?.visibility = View.GONE; navBottom?.visibility = View.GONE
         topUi?.visibility = View.VISIBLE; fabCol?.visibility = View.VISIBLE
@@ -852,7 +906,7 @@ class MapActivity : Activity(), LocationListener {
 
     private fun startNav() {
         val r = route ?: return
-        navigating = true; follow = true; spoken.clear(); lastIdx = 0; offCount = 0
+        navigating = true; follow = true; setOff(false); spoken.clear(); lastIdx = 0; offCount = 0
         previewCard?.visibility = View.GONE; topUi?.visibility = View.GONE
         navWrap?.visibility = View.VISIBLE; navBanner?.visibility = View.VISIBLE; navBottom?.visibility = View.VISIBLE; speedBox?.visibility = View.VISIBLE
         setNavView(true)
@@ -970,9 +1024,8 @@ class MapActivity : Activity(), LocationListener {
         speedT?.text = (mySpeed * 3.6f).roundToInt().toString() + " km/h"
         streetT?.text = PlaceIndexName.cached(this, myLat, myLon)
         // girar el mapa con el rumbo
-        mapView?.model?.mapViewPosition?.setCenter(LatLong(myLat, myLon))
+        if (follow) { mapView?.model?.mapViewPosition?.setCenter(LatLong(myLat, myLon)); autoZoom(dNext) }
         applyHeading()
-        casing?.let { }
         if (remain < 25 && total > 60) stopNav(true)
     }
 
@@ -1042,7 +1095,7 @@ class MapActivity : Activity(), LocationListener {
     override fun onDestroy() {
         AsistenteService.choiceUntil = 0L; AsistenteService.choiceCb = null; fuelVoice?.stop()
         try { (getSystemService(Context.LOCATION_SERVICE) as LocationManager).removeUpdates(this) } catch (e: Exception) { }
-        VozClips.stop()
+        VozClips.stop(); autoLoop?.let { ui.removeCallbacks(it) }; autoLoop = null
         try { mapView?.destroyAll() } catch (e: Throwable) { }
         try { sentido?.close() } catch (e: Throwable) { }
         super.onDestroy()
