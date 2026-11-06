@@ -2679,14 +2679,7 @@ class MainActivity : Activity() {
         "cal" -> { val n = nextHolidayText(); wInfo("Próximo feriado", n ?: "—", th.fg) { openCalendar() } }
         "asist" -> wInfo("Asistente", "Hey ${wakeName()}", cyan) { assistantDialog() }
         "estado" -> { val (c, w) = attention(); wInfo("Estado del auto", if (c == 0) "Todo bien" else "$c avisos", if (c == 0) green else if (w == 2) red else amber) { setPanel(true) } }
-        "sol" -> wSun(s)
         else -> View(this)
-    }
-
-    private fun wSun(s: WSpec): View {
-        val c = FrameLayout(this).apply { background = wGlass(16f); isClickable = true; setOnClickListener { nightSettings() } }
-        c.addView(SunView(this, p(1).toFloat(), th.fg, th.fgSoft, { sunTimes(Calendar.getInstance()) }), FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        return c
     }
 
     private fun nextHolidayText(): String? = try {
@@ -2745,13 +2738,13 @@ class MainActivity : Activity() {
         }
         val showDate = s.h >= 70f
         clockView = TextView(this).apply {
-            size(min((s.w / 3.3f).coerceIn(26f, 64f), s.h * if (showDate) 0.6f else 0.8f)); setTextColor(Color.WHITE)
+            size(min((s.w / 3.3f).coerceIn(26f, 64f), s.h * if (showDate) 0.46f else 0.8f)); setTextColor(Color.WHITE)
             typeface = Typeface.create("sans-serif-light", Typeface.NORMAL); letterSpacing = -0.03f; includeFontPadding = false
             setShadowLayer(10f, 0f, 2f, Color.parseColor("#99000000")); maxLines = 1
         }
         dateView = TextView(this).apply {
             size(if (s.w >= 170f) 14f else 11f); setTextColor(Color.WHITE); setShadowLayer(8f, 0f, 2f, Color.parseColor("#99000000"))
-            setPadding(0, p(4), 0, 0); gravity = Gravity.CENTER; maxLines = 1; ellipsize = TextUtils.TruncateAt.END; visibility = if (showDate) View.VISIBLE else View.GONE
+            setPadding(0, p(2), 0, 0); gravity = Gravity.CENTER; maxLines = 1; ellipsize = TextUtils.TruncateAt.END; visibility = if (showDate) View.VISIBLE else View.GONE
         }
         clockView!!.gravity = Gravity.CENTER; dateView!!.gravity = Gravity.CENTER
         c.addView(clockView, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)); c.addView(dateView, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
