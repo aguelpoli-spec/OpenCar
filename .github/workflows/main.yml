@@ -1,25 +1,35 @@
 name: Build APKs
-on: workflow_dispatch
+
+on:
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - name: Build launcher
         working-directory: launcher
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
+
       - name: Build music
         working-directory: music
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@v4
         with:
           name: opencar-apks
           path: |
